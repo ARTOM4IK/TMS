@@ -5,7 +5,7 @@ import
   vec2,
   mat4
 }
-from "../../../node_modules/wgpu-matrix/dist/3.x/wgpu-matrix.module.js";
+from "/node_modules/wgpu-matrix/dist/3.x/wgpu-matrix.module.js";
 function mix(A, B, T)
 {
     return A * (1 - T) + B * T;

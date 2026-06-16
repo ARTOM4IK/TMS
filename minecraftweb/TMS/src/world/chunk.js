@@ -1,4 +1,4 @@
-import { vec2, vec3 } from "../../../node_modules/wgpu-matrix/dist/3.x/wgpu-matrix.module.js";
+import { vec2, vec3 } from "/node_modules/wgpu-matrix/dist/3.x/wgpu-matrix.module.js";
 import { PerlinNoise } from '../math/math.js';
 
 export class Chunk

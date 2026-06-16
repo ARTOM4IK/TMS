@@ -1,4 +1,4 @@
-import { mat4 } from '../../../node_modules/wgpu-matrix/dist/3.x/wgpu-matrix.module.js';
+import { mat4 } from '/node_modules/wgpu-matrix/dist/3.x/wgpu-matrix.module.js';
 
 function CreateUnitCubeVertices()
 {
