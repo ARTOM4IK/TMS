@@ -1,4 +1,4 @@
-import { vec3 } from "/node_modules/wgpu-matrix/dist/3.x/wgpu-matrix.module.js";
+import { vec3 } from "../../../node_modules/wgpu-matrix/dist/3.x/wgpu-matrix.module.js";
 import { Camera } from '../renderer/camera.js';
 import { mix } from "../math/math.js";
 

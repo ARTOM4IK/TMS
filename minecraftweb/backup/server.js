@@ -29,7 +29,10 @@ const App = Express();
 const HttpServer = Http.createServer(App);
 
 //data to req.body
-App.use(Cors());
+App.use(Cors({
+  origin: '*',
+  credentials: true  
+}));
 App.use(Express.json());
 App.use(Express.urlencoded({ extended: true }));
 
@@ -53,23 +56,6 @@ function RequestLogger(Req, Res, Next)
 App.use(RequestLogger);
 App.use('/api', require('./routes/api'));
 const TmsRoot = Path.join(__dirname, '..', 'TMS');
-
-const StaticOptions =
-{
-  index: false,
-  setHeaders: (Res, FilePath) =>
-  {
-    if (FilePath.endsWith('.js'))
-      Res.type('application/javascript');
-    else if (FilePath.endsWith('.wgsl'))
-      Res.type('text/plain');
-  }
-};
-
-// Serve the game client explicitly before any HTML page routes.
-App.use('/src', Express.static(Path.join(TmsRoot, 'src'), StaticOptions));
-App.use('/bin', Express.static(Path.join(TmsRoot, 'bin'), StaticOptions));
-App.use('/node_modules', Express.static(Path.join(TmsRoot, 'node_modules'), StaticOptions));
 
 /*
  * Send HTML page for clean URL route.
@@ -100,7 +86,7 @@ App.get('/forgot', ServePage('forgot.html'));
 
 //connect other additional files
 App.use(Express.static(Path.join(__dirname, 'public')));
-App.use(Express.static(TmsRoot, StaticOptions));
+App.use(Express.static(TmsRoot));
 
 /*
  * Main server initialization.
@@ -116,9 +102,11 @@ async function StartServer()
     StartWebRTCServer(HttpServer);
 
     const Port = process.env.PORT || 3000;
-    HttpServer.listen(Port, () =>
+    HttpServer.listen(Port, '0.0.0.0', () =>
     {
-      console.log(`Minecraft Web Server running on http://localhost:${Port}`);
+      console.log(`Minecraft Web успешно запущен!`);
+      console.log(`Локально: http://localhost:${Port}`);
+      console.log(`В интернете: http://80.93.62.164:${Port}\n`);
     });
   }
   catch (error)

@@ -83,7 +83,12 @@ function StartWebRTCServer(HttpServer)
 {
   const IoInstance = new Server(HttpServer, 
   {
-    cors: { origin: '*', methods: ['GET', 'POST'] }
+    cors: 
+    { 
+      origin: '*',
+      methods: ['GET', 'POST'],
+    }, 
+    transports: ['websocket', 'polling']     
   });
   InitSocketHandlers(IoInstance);
   global.io = IoInstance;

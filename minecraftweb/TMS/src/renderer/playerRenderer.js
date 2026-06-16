@@ -1,4 +1,4 @@
-import { mat4 } from '/node_modules/wgpu-matrix/dist/3.x/wgpu-matrix.module.js';
+import { mat4 } from '../../../node_modules/wgpu-matrix/dist/3.x/wgpu-matrix.module.js';
 
 function CreateUnitCubeVertices()
 {
@@ -29,11 +29,15 @@ function CreateUnitCubeVertices()
   return Vertices;
 }
 
+const PLAYER_UNIFORM_USAGE = GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST;
+const PLAYER_UNIFORM_SIZE = 80;
+
 export class PlayerRenderer
 {
   constructor(Renderer)
   {
     this.renderer = Renderer;
+    this.playerUniforms = new Map();
   }
 
   async init()
@@ -42,17 +46,16 @@ export class PlayerRenderer
     const Shader = await this.renderer.shaders.loadModule('player', '../bin/shaders/player.wgsl');
 
     this.sceneBuffer = this.renderer.bufferPool.getBuffer(64, GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST);
-    this.playerBuffer = this.renderer.bufferPool.getBuffer(80, GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST);
 
     const SceneLayout = Gpu.device.createBindGroupLayout({
       entries: [{ binding: 0, visibility: GPUShaderStage.VERTEX, buffer: { type: 'uniform' } }]
     });
-    const PlayerLayout = Gpu.device.createBindGroupLayout({
+    this.playerLayout = Gpu.device.createBindGroupLayout({
       entries: [{ binding: 0, visibility: GPUShaderStage.VERTEX | GPUShaderStage.FRAGMENT, buffer: { type: 'uniform' } }]
     });
 
     this.pipeline = this.renderer.pipelines.createRenderPipeline('player', {
-      layout: Gpu.device.createPipelineLayout({ bindGroupLayouts: [SceneLayout, PlayerLayout] }),
+      layout: Gpu.device.createPipelineLayout({ bindGroupLayouts: [SceneLayout, this.playerLayout] }),
       vertexModule: Shader,
       vertexEntry: 'vs_main',
       vertexBuffers: [{
@@ -75,11 +78,6 @@ export class PlayerRenderer
       entries: [{ binding: 0, resource: { buffer: this.sceneBuffer } }]
     });
 
-    this.playerBindGroup = Gpu.device.createBindGroup({
-      layout: PlayerLayout,
-      entries: [{ binding: 0, resource: { buffer: this.playerBuffer } }]
-    });
-
     const Vertices = CreateUnitCubeVertices();
     this.vertexBuffer = Gpu.device.createBuffer({
       size: Vertices.byteLength,
@@ -91,7 +89,34 @@ export class PlayerRenderer
     this.vertexCount = Vertices.length / 3;
   }
 
-  writeModelUniform(Center, Scale, Yaw, Pitch, Color, HeadMode)
+  getPlayerGpu(RemoteId)
+  {
+    if (!this.playerUniforms.has(RemoteId))
+    {
+      const Buffer = this.renderer.bufferPool.getBuffer(PLAYER_UNIFORM_SIZE, PLAYER_UNIFORM_USAGE);
+      const BindGroup = this.renderer.webgpu.device.createBindGroup({
+        layout: this.playerLayout,
+        entries: [{ binding: 0, resource: { buffer: Buffer } }]
+      });
+      this.playerUniforms.set(RemoteId, { buffer: Buffer, bindGroup: BindGroup });
+    }
+    return this.playerUniforms.get(RemoteId);
+  }
+
+  releaseStaleUniforms(RemotePlayers)
+  {
+    for (const RemoteId of this.playerUniforms.keys())
+    {
+      if (!RemotePlayers.has(RemoteId))
+      {
+        const Entry = this.playerUniforms.get(RemoteId);
+        this.renderer.bufferPool.releaseBuffer(Entry.buffer, PLAYER_UNIFORM_USAGE);
+        this.playerUniforms.delete(RemoteId);
+      }
+    }
+  }
+
+  writeModelUniform(UniformBuffer, Center, Scale, Yaw, Pitch, Color, HeadMode)
   {
     const ScaleMatrix = mat4.scaling(Scale);
     const RotY = mat4.rotationY(Yaw);
@@ -105,13 +130,14 @@ export class PlayerRenderer
     Data[17] = Color[1];
     Data[18] = Color[2];
     Data[19] = Color[3];
-    this.renderer.bufferPool.write(this.playerBuffer, Data, 0);
+    this.renderer.bufferPool.write(UniformBuffer, Data, 0);
   }
 
   render(RemotePlayers, Camera, CommandEncoder, ColorView, DepthView)
   {
     if (!this.pipeline || RemotePlayers.size === 0) return;
 
+    this.releaseStaleUniforms(RemotePlayers);
     this.renderer.bufferPool.write(this.sceneBuffer, Camera.viewProjection, 0);
 
     const Pass = CommandEncoder.beginRenderPass({
@@ -133,8 +159,10 @@ export class PlayerRenderer
 
     for (const Remote of RemotePlayers.values())
     {
-      Pass.setBindGroup(1, this.playerBindGroup);
+      const PlayerGpu = this.getPlayerGpu(Remote.id);
+
       this.writeModelUniform(
+        PlayerGpu.buffer,
         Remote.getBodyCenter(),
         Remote.getBodyScale(),
         Remote.yaw,
@@ -142,6 +170,7 @@ export class PlayerRenderer
         Remote.color,
         false
       );
+      Pass.setBindGroup(1, PlayerGpu.bindGroup);
       Pass.draw(this.vertexCount, 1, 0, 0);
 
       const HeadColor = [
@@ -151,6 +180,7 @@ export class PlayerRenderer
         1
       ];
       this.writeModelUniform(
+        PlayerGpu.buffer,
         Remote.getHeadCenter(),
         Remote.getHeadScale(),
         Remote.yaw,
@@ -158,6 +188,7 @@ export class PlayerRenderer
         HeadColor,
         true
       );
+      Pass.setBindGroup(1, PlayerGpu.bindGroup);
       Pass.draw(this.vertexCount, 1, 0, 0);
     }
 
