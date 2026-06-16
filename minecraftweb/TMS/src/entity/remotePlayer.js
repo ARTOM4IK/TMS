@@ -21,6 +21,7 @@ export class RemotePlayer
     this.targetYaw = 0;
     this.targetPitch = 0;
     this.lastUpdate = Date.now();
+    this.hasState = false;
   }
 
   applyState(State)
@@ -32,6 +33,17 @@ export class RemotePlayer
     this.targetPitch = State.pitch;
     if (State.name)
       this.name = State.name;
+
+    if (!this.hasState)
+    {
+      this.x = State.x;
+      this.y = State.y;
+      this.z = State.z;
+      this.yaw = State.yaw;
+      this.pitch = State.pitch;
+      this.hasState = true;
+    }
+
     this.lastUpdate = Date.now();
   }
 

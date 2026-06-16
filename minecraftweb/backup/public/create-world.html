@@ -7,247 +7,31 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
-    <style>
-        body, html 
-        {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            font-family: 'VT323', monospace;
-        }
-
-        #background-container 
-        {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-            background-color: #1a1a1a;
-        }
-
-        #background-container::after 
-        {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            pointer-events: none;
-        }
-
-        .create-container 
-        {
-            position: relative;
-            z-index: 2;
-            background-color: rgba(112, 112, 112, 0.95);
-            border: 4px solid #3c3c3c;
-            border-top-color: #7e7e7e;
-            border-left-color: #7e7e7e;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
-            padding: 40px;
-            width: 90%;
-            max-width: 500px;
-            text-align: center;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
-
-        .create-container h2 
-        {
-            font-family: 'Press Start 2P', cursive;
-            color: #ffffff;
-            font-size: 24px;
-            margin-bottom: 30px;
-            text-shadow: 4px 4px 0px #000000;
-            text-transform: uppercase;
-            line-height: 1.5;
-        }
-
-        .input-group 
-        {
-            margin-bottom: 25px;
-            text-align: left;
-        }
-
-        .input-group label 
-        {
-            display: block;
-            color: #ffffff;
-            font-size: 20px;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 0px #000000;
-        }
-
-        .input-group input, .input-group select 
-        {
-            width: 100%;
-            padding: 12px;
-            box-sizing: border-box;
-            background-color: #8b8b8b;
-            border: 2px solid #3c3c3c;
-            border-top-color: #5e5e5e;
-            border-left-color: #5e5e5e;
-            color: #000000;
-            font-size: 20px;
-            font-family: 'VT323', monospace;
-            outline: none;
-            box-shadow: inset 2px 2px 0px #3a3a3a;
-        }
-
-        .input-group input:focus, .input-group select:focus 
-        {
-            border-color: #ffffff;
-            border-top-color: #ffffff;
-            border-left-color: #ffffff;
-        }
-
-        .checkbox-group 
-        {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .checkbox-group input 
-        {
-            width: auto;
-            cursor: pointer;
-        }
-
-        .checkbox-group label 
-        {
-            cursor: pointer;
-        }
-
-        .btn-minecraft 
-        {
-            width: 100%;
-            padding: 15px;
-            background-color: #868686;
-            border: 2px solid #000000;
-            border-top-color: #fff;
-            border-left-color: #fff;
-            color: #ffffff;
-            font-family: 'Press Start 2P', cursive;
-            font-size: 14px;
-            cursor: pointer;
-            text-shadow: 2px 2px 0px #000;
-            margin-top: 10px;
-            box-shadow: inset -2px -2px 0px #3a3a3a;
-            transition: all 0.1s;
-        }
-
-        .btn-minecraft:hover 
-        {
-            background-color: #7a9a60;
-            color: #ffffff;
-            border-top-color: #bfff80;
-            border-left-color: #bfff80;
-            box-shadow: inset -2px -2px 0px #4d6638;
-        }
-
-        .btn-minecraft:active 
-        {
-            box-shadow: inset 2px 2px 0px #3a3a3a;
-            border-top-color: #3c3c3c;
-            border-left-color: #3c3c3c;
-        }
-
-        .btn-back 
-        {
-            width: 100%;
-            padding: 10px;
-            background-color: #9a6060;
-            border: 2px solid #000000;
-            border-top-color: #fff;
-            border-left-color: #fff;
-            color: #ffffff;
-            font-family: 'Press Start 2P', cursive;
-            font-size: 14px;
-            cursor: pointer;
-            text-shadow: 2px 2px 0px #000;
-            margin-top: 10px;
-            box-shadow: inset -2px -2px 0px #3a3a3a;
-            transition: all 0.1s;
-        }
-
-        .btn-back:hover 
-        {
-            background-color: #8a5050;
-            color: #ffffff;
-            border-top-color: #bfff80;
-            border-left-color: #bfff80;
-            box-shadow: inset -2px -2px 0px #4d6638;
-        }
-
-        .btn-back:active 
-        {
-            box-shadow: inset 2px 2px 0px #3a3a3a;
-            border-top-color: #3c3c3c;
-            border-left-color: #3c3c3c;
-        }
-
-        .error-message 
-        {
-            color: #ff5555;
-            font-size: 18px;
-            margin-top: 15px;
-            text-shadow: 1px 1px 0px #000;
-            display: none;
-        }
-
-        .success-message 
-        {
-            color: #55ff55;
-            font-size: 18px;
-            margin-top: 15px;
-            text-shadow: 1px 1px 0px #000;
-            display: none;
-        }
-
-        .loading 
-        {
-            display: none;
-            margin: 15px auto;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255,255,255,0.3);
-            border-radius: 50%;
-            border-top-color: #fff;
-            animation: spin 1s ease-in-out infinite;
-        }
-    </style>
+    <link rel="stylesheet" href="/css/Common.css">
+    <link rel="stylesheet" href="/css/CreateWorld.css">
 </head>
 <body>
-    <div id="background-container"></div>
+    <div id="BackgroundContainer"></div>
 
-    <div class="create-container">
+    <div class="CreateContainer">
         <h2>Создание Мира</h2>
-        
+
         <form id="CreateWorldForm">
-            <div class="input-group">
+            <div class="InputGroup">
                 <label for="WorldName">Название Мира</label>
                 <input type="text" id="WorldName" name="worldName" required placeholder="Например: Мой Мир" maxlength="30">
             </div>
-            
-            <div class="input-group">
+
+            <div class="InputGroup">
                 <label for="Seed">Сид (Seed)</label>
-                <div class="checkbox-group">
+                <div class="CheckboxGroup">
                     <input type="checkbox" id="RandomSeed" name="randomSeed">
                     <label for="RandomSeed">Рандомный сид</label>
                 </div>
-                <input type="text" id="Seed" name="seed" placeholder="12345" style="margin-top: 10px;">
+                <input type="text" id="Seed" name="seed" placeholder="12345" class="SeedOffset">
             </div>
 
-            <div class="input-group">
+            <div class="InputGroup">
                 <label for="WorldType">Тип мира</label>
                 <select id="WorldType" name="worldType">
                     <option value="default">Обычный</option>
@@ -257,129 +41,15 @@
                 </select>
             </div>
 
-            <button type="submit" class="btn-minecraft" id="CreateBtn">Создать мир</button>
-            <div class="loading" id="Loading"></div>
-            <div class="error-message" id="ErrorMessage"></div>
-            <div class="success-message" id="SuccessMessage"></div>
+            <button type="submit" class="BtnMinecraft" id="CreateBtn">Создать мир</button>
+            <div class="Loading" id="Loading"></div>
+            <div class="ErrorMessage" id="ErrorMessage"></div>
+            <div class="SuccessMessage" id="SuccessMessage"></div>
         </form>
-        
-        <button class="btn-back" id="BackBtn">Назад в меню</button>
+
+        <button class="BtnBack" id="BackBtn">Назад в меню</button>
     </div>
 
-    <script>
-        let Token = null;
-
-        async function HandleCreateWorld(Event) 
-        {
-            Event.preventDefault();
-            
-            const WorldName = document.getElementById('WorldName').value.trim();
-            const RandomSeed = document.getElementById('RandomSeed').checked;
-            const SeedInput = document.getElementById('Seed').value.trim();
-            const WorldType = document.getElementById('WorldType').value;
-            const CreateBtn = document.getElementById('CreateBtn');
-            const Loading = document.getElementById('Loading');
-            const ErrorMessage = document.getElementById('ErrorMessage');
-            const SuccessMessage = document.getElementById('SuccessMessage');
-            
-            ErrorMessage.style.display = 'none';
-            SuccessMessage.style.display = 'none';
-            
-            if (!WorldName) 
-            {
-                ShowError('Введите название мира');
-                return;
-            }
-            
-            CreateBtn.style.display = 'none';
-            Loading.style.display = 'block';
-            
-            try 
-            {
-                const Response = await fetch('/api/worlds', 
-                {
-                    method: 'POST',
-                    headers:
-                    { 
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${Token}`
-                    },
-                    body: JSON.stringify({
-                        name: WorldName,
-                        seed: RandomSeed ? '' : SeedInput,
-                        worldType: WorldType
-                    })
-                });
-                
-                const Data = await Response.json();
-                
-                if (Response.ok) 
-                {
-                    SuccessMessage.textContent = 'Мир создан! Перенаправление...';
-                    SuccessMessage.style.display = 'block';
-                    
-                    window.location.href = '/world?worldId=' + Data.world.id;
-                }
-                else
-                {
-                    ShowError(Data.error || 'Ошибка создания мира');
-                }
-            }
-            catch (Error)
-            {
-                ShowError('Ошибка подключения');
-                console.error('Create world error:', Error);
-            }
-            finally
-            {
-                CreateBtn.style.display = 'block';
-                Loading.style.display = 'none';
-            }
-        }
-
-        function ShowError(Message)
-        {
-            const ErrorMessage = document.getElementById('ErrorMessage');
-            ErrorMessage.textContent = Message;
-            ErrorMessage.style.display = 'block';
-        }
-
-        function ShowSuccess(Message) 
-        {
-            const SuccessMessage = document.getElementById('SuccessMessage');
-            SuccessMessage.textContent = Message;
-            SuccessMessage.style.display = 'block';
-        }
-
-        document.getElementById('RandomSeed').addEventListener('change', function()
-        {
-            const SeedInput = document.getElementById('Seed');
-            SeedInput.disabled = this.checked;
-            if (this.checked) 
-            {
-                SeedInput.value = '';
-            }
-        });
-
-        function Init()
-        {
-            Token = localStorage.getItem('ls_token');
-
-            if (!Token) 
-            {
-                window.location.href = '/';
-                return;
-            }
-
-            document.getElementById('CreateWorldForm').addEventListener('submit', HandleCreateWorld);
-            document.getElementById('BackBtn').addEventListener('click', () => 
-            {
-                window.location.href = '/menu';
-            });
-        }
-
-        Init();
-    </script>
-
+    <script src="/scripts/CreateWorld.js"></script>
 </body>
 </html>

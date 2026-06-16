@@ -22,14 +22,17 @@ const Http = require('http');
 const Express = require('express');
 const Cors = require('cors');
 const Path = require('path');
-const { CreateTable, InitializeTestUsers, TestUsers } = require('./database');
+const { ConnectMongo, InitializeTestUsers, TestUsers } = require('./database');
 const { StartWebRTCServer } = require('./webrtc');
 
 const App = Express();
 const HttpServer = Http.createServer(App);
 
 //data to req.body
-App.use(Cors());
+App.use(Cors({
+  origin: '*',
+  credentials: true  
+}));
 App.use(Express.json());
 App.use(Express.urlencoded({ extended: true }));
 
@@ -94,13 +97,16 @@ async function StartServer()
 {
   try
   {
-    InitializeTestUsers(TestUsers);
+    await ConnectMongo();
+    await InitializeTestUsers(TestUsers);
     StartWebRTCServer(HttpServer);
 
     const Port = process.env.PORT || 3000;
-    HttpServer.listen(Port, () =>
+    HttpServer.listen(Port, '0.0.0.0', () =>
     {
-      console.log(`Minecraft Web Server running on http://localhost:${Port}`);
+      console.log(`Minecraft Web успешно запущен!`);
+      console.log(`Локально: http://localhost:${Port}`);
+      console.log(`В интернете: http://80.93.62.164:${Port}\n`);
     });
   }
   catch (error)

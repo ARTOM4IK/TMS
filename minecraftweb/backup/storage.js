@@ -1,354 +1,330 @@
-/***************************************************************
- * Copyright (C) 2026
- *    Computer Graphics Support Group of 30 Phys-Math Lyceum
- ***************************************************************/
+const Bcrypt = require('bcryptjs');
+const Counter = require('./models/Counter');
+const User = require('./models/User');
+const World = require('./models/World');
+const Chunk = require('./models/Chunk');
+const Log = require('./models/Log');
+const ResetCode = require('./models/ResetCode');
 
-/* FILE NAME   : storage.js
- * PURPOSE     : Minecraft Web.
- *               File-based storage with encryption.
- * PROGRAMMER  : CGSG'Sr'2025.
- *               Kochugueva Maria (MK3),
- *               Arsentev Artemy (AA4),
- *               Nechaev Vladimir (VN4).
- * LAST UPDATE : 05.06.2026
- * NOTE        : None.
- *
- * No part of this file may be changed without agreement of
- * Computer Graphics Support Group of 30 Phys-Math Lyceum
- */
+const CHUNK_BLOCK_BYTES = 65536 * 4;
 
-const Fs = require('fs');
-const Path = require('path');
-const Crypto = require('crypto');
-
-const StorageFile = Path.join(__dirname, 'data', 'users.json');
-const EncryptionKeyRaw = process.env.STORAGE_KEY || 'webminecraft_encryption_key_2024';
-const EncryptionKey = Buffer.from(EncryptionKeyRaw.padEnd(32, '0').substring(0, 32));
-const LogsFile = Path.join(__dirname, 'data', 'logs.json');
-
-/*
- * Ensure data directory exists.
- * ARGUMENTS: None.
- * RETURNS: None.
- */
-function EnsureDirectory()
+async function GetNextSequence(Name)
 {
-  const DataDir = Path.dirname(StorageFile);
+  const Doc = await Counter.findByIdAndUpdate(
+    Name,
+    { $inc: { seq: 1 } },
+    { new: true, upsert: true }
+  );
+  return Doc.seq;
+}
 
-  if (!Fs.existsSync(DataDir))
-    Fs.mkdirSync(DataDir, { recursive: true });
-} /* End of 'EnsureDirectory' function */
-
-/*
- * Encrypt data.
- * ARGUMENTS:
- *   - Data to encrypt:
- *       object Data;
- * RETURNS:
- *   (string) encrypted data string.
- */
-function Encrypt(Data)
+function UserToPlain(UserDoc)
 {
-  //initial vector to differ same encyptions
-  const Iv = Crypto.randomBytes(16);
-  const Cipher = Crypto.createCipheriv('aes-256-cbc', EncryptionKey, Iv);
-  let Encrypted = Cipher.update(JSON.stringify(Data), 'utf8', 'hex');
-  Encrypted += Cipher.final('hex');
-  return Iv.toString('hex') + ':' + Encrypted;
-} /* End of 'Encrypt' function */
+  if (!UserDoc) return null;
+  const Plain = UserDoc.toObject ? UserDoc.toObject() : UserDoc;
+  return {
+    id: Plain.id,
+    username: Plain.username,
+    email: Plain.email,
+    password: Plain.password,
+    webrtc_id: Plain.webrtc_id,
+    IsAdmin: Plain.IsAdmin === true,
+    banned: Plain.banned === true,
+    created_at: Plain.created_at,
+    last_login: Plain.last_login
+  };
+}
 
-/*
- * Decrypt data.
- * ARGUMENTS:
- *   - Encrypted data string:
- *       string EncryptedData;
- * RETURNS:
- *   (object) decrypted data object.
- */
-function Decrypt(EncryptedData)
+function WorldToPlain(WorldDoc)
 {
-  const [Iv, Content] = EncryptedData.split(':');
-  const Decipher = Crypto.createDecipheriv('aes-256-cbc', EncryptionKey, Buffer.from(Iv, 'hex'));
-  let Decrypted = Decipher.update(Content, 'hex', 'utf8');
-  Decrypted += Decipher.final('utf8');
-  return JSON.parse(Decrypted);
-} /* End of 'Decrypt' function */
+  if (!WorldDoc) return null;
+  const Plain = WorldDoc.toObject ? WorldDoc.toObject() : WorldDoc;
+  return {
+    id: Plain.worldId,
+    name: Plain.name,
+    seed: Plain.seed,
+    worldType: Plain.worldType,
+    creatorId: Plain.creatorId,
+    creatorUsername: Plain.creatorUsername,
+    players: Plain.players || [],
+    createdAt: Plain.createdAt
+  };
+}
 
-/*
- * Read users from encrypted file.
- * ARGUMENTS: None.
- * RETURNS:
- *   (array) list of user records.
- */
-function ReadUsers()
+async function FindUserByUsername(Username)
 {
-  try
-  {
-    EnsureDirectory();
+  const UserDoc = await User.findOne({ username: Username.toLowerCase() });
+  return UserToPlain(UserDoc);
+}
 
-    if (!Fs.existsSync(StorageFile))
-      return [];
-
-    const Encrypted = Fs.readFileSync(StorageFile, 'utf8');
-    return Decrypt(Encrypted);
-  }
-  catch (error)
-  {
-    console.error('Error reading storage:', error.message);
-    return [];
-  }
-} /* End of 'ReadUsers' function */
-
-/*
- * Write users to encrypted file.
- * ARGUMENTS:
- *   - Users array to save:
- *       array Users;
- * RETURNS: None.
- */
-function WriteUsers(Users)
+async function FindUserByEmail(Email)
 {
-  try
-  {
-    EnsureDirectory();
-    const Encrypted = Encrypt(Users);
-    Fs.writeFileSync(StorageFile, Encrypted, 'utf8');
-  }
-  catch (error)
-  {
-    console.error('Error writing storage:', error.message);
-    throw error;
-  }
-} /* End of 'WriteUsers' function */
+  const UserDoc = await User.findOne({ email: Email.toLowerCase() });
+  return UserToPlain(UserDoc);
+}
 
-/*
- * Find user by username.
- * ARGUMENTS:
- *   - Username to search:
- *       string Username;
- * RETURNS:
- *   (object|undefined) user record.
- */
-function FindUserByUsername(Username)
+async function FindUserById(UserId)
 {
-  const Users = ReadUsers();
-  return Users.find(User => User.username === Username.toLowerCase());
-} /* End of 'FindUserByUsername' function */
+  const NumId = typeof UserId === 'string' ? parseInt(UserId, 10) : UserId;
+  const UserDoc = await User.findOne({ id: NumId });
+  return UserToPlain(UserDoc);
+}
 
-/*
- * Find user by email.
- * ARGUMENTS:
- *   - Email to search:
- *       string Email;
- * RETURNS:
- *   (object|undefined) user record.
- */
-function FindUserByEmail(Email)
+async function InsertUser(Username, Email, HashedPassword, WebRtcId, IsAdmin = false)
 {
-  const Users = ReadUsers();
-  return Users.find(User => User.email === Email.toLowerCase());
-} /* End of 'FindUserByEmail' function */
-
-/*
- * Insert new user into storage.
- * ARGUMENTS:
- *   - Username:
- *       string Username;
- *   - Email:
- *       string Email;
- *   - Hashed password:
- *       string HashedPassword;
- *   - WebRTC identifier:
- *       string WebRtcId;
- * RETURNS:
- *   (object) created user record.
- */
-function InsertUser(Username, Email, HashedPassword, WebRtcId, IsAdmin = false)
-{
-  const Users = ReadUsers();
-  const NewUser = 
-  {
-    id: Users.length + 1,
+  const NextId = await GetNextSequence('userId');
+  const UserDoc = await User.create({
+    id: NextId,
     username: Username.toLowerCase(),
     email: Email.toLowerCase(),
     password: HashedPassword,
     webrtc_id: WebRtcId,
     IsAdmin: IsAdmin === true,
-    created_at: new Date().toISOString(),
+    banned: false,
+    created_at: new Date(),
     last_login: null
-  };
-  Users.push(NewUser);
-  WriteUsers(Users);
-  return NewUser;
-} /* End of 'InsertUser' function */
+  });
+  return UserToPlain(UserDoc);
+}
 
-/*
- * Check if user is admin.
- * ARGUMENTS:
- *   - User record:
- *       object User;
- * RETURNS:
- *   (boolean) admin status.
- */
+async function UpdateLastLogin(UserId)
+{
+  const Result = await User.updateOne(
+    { id: UserId },
+    { $set: { last_login: new Date() } }
+  );
+  return Result.modifiedCount > 0;
+}
+
+async function UpdateUserPassword(Email, HashedPassword)
+{
+  const Result = await User.updateOne(
+    { email: Email.toLowerCase() },
+    { $set: { password: HashedPassword } }
+  );
+  return Result.modifiedCount > 0;
+}
+
+async function GetAllUsers()
+{
+  const Users = await User.find({}, { username: 1, email: 1, created_at: 1 }).lean();
+  return Users.map(Entry => ({
+    username: Entry.username,
+    email: Entry.email,
+    created_at: Entry.created_at
+  }));
+}
+
+async function ReadUsers()
+{
+  const Users = await User.find().lean();
+  return Users.map(UserToPlain);
+}
+
 function IsUserAdmin(User)
 {
   return !!(User && User.IsAdmin === true);
-} /* End of 'IsUserAdmin' function */
+}
 
-/*
- * Update last login.
- * ARGUMENTS:
- *   - User identifier:
- *       number UserId;
- * RETURNS:
- *   (boolean) success status.
- */
-function UpdateLastLogin(UserId)
+async function SetBanned(Username, Banned)
 {
-  const Users = ReadUsers();
-  const User = Users.find(U => U.id === UserId);
+  const Result = await User.updateOne(
+    { username: Username.toLowerCase() },
+    { $set: { banned: Banned === true } }
+  );
+  return Result.matchedCount > 0;
+}
 
-  if (User)
-  {
-    User.last_login = new Date().toISOString();
-    WriteUsers(Users);
-    return true;
-  }
-
-  return false;
-} /* End of 'UpdateLastLogin' function */
-
-/*
- * Find user by ID.
- * ARGUMENTS:
- *   - User identifier:
- *       number|string UserId;
- * RETURNS:
- *   (object|undefined) user record.
- */
-function FindUserById(UserId)
+async function SetUserAdmin(Username, IsAdminFlag)
 {
-  const Users = ReadUsers();
-  const NumId = typeof UserId === 'string' ? parseInt(UserId, 10) : UserId;
-  return Users.find(User => User.id === NumId);
-} /* End of 'FindUserById' function */
+  const Result = await User.updateOne(
+    { username: Username.toLowerCase() },
+    { $set: { IsAdmin: IsAdminFlag === true } }
+  );
+  return Result.matchedCount > 0;
+}
 
-/*
- * Get all users without sensitive fields.
- * ARGUMENTS: None.
- * RETURNS:
- *   (array) sanitized user list.
- */
-function GetAllUsers()
+async function WriteLog(Username, Action)
 {
-  const Users = ReadUsers();
-  return Users.map(U => ({
-    username: U.username,
-    email: U.email,
-    created_at: U.created_at
+  await Log.create({ username: Username, action: Action, time: new Date() });
+}
+
+async function ReadLogs()
+{
+  const Logs = await Log.find().sort({ time: 1 }).lean();
+  return Logs.map(Entry => ({
+    username: Entry.username,
+    action: Entry.action,
+    time: Entry.time
   }));
-} /* End of 'GetAllUsers' function */
+}
 
-/*
- * Initialize test users if storage is empty.
- * ARGUMENTS:
- *   - Test users data:
- *       array TestUsers;
- * RETURNS: None.
- */
+async function SaveResetCode(Email, Code, ExpiresAt)
+{
+  await ResetCode.findOneAndUpdate(
+    { email: Email.toLowerCase() },
+    { code: Code, expires: ExpiresAt },
+    { upsert: true, new: true }
+  );
+}
+
+async function FindResetCode(Email)
+{
+  return ResetCode.findOne({ email: Email.toLowerCase() }).lean();
+}
+
+async function DeleteResetCode(Email)
+{
+  await ResetCode.deleteOne({ email: Email.toLowerCase() });
+}
+
 async function InitializeTestUsers(TestUsers)
 {
-  const Users = ReadUsers();
-
-  if (Users.length === 0)
+  const Count = await User.countDocuments();
+  if (Count > 0)
   {
-    const Bcrypt = require('bcryptjs');
-    const InitializedUsers = await Promise.all(TestUsers.map(async (UserData, Index) => ({
-      id: Index + 1,
-      username: UserData.username.toLowerCase(),
-      email: UserData.email.toLowerCase(),
-      password: await Bcrypt.hash(UserData.password, 10),
-      webrtc_id: UserData.webrtcId,
-      IsAdmin: UserData.IsAdmin === true,
-      created_at: new Date().toISOString(),
-      last_login: null
-    })));
-    WriteUsers(InitializedUsers);
-    console.log(`Test users initialized: ${TestUsers.length} users`);
+    console.log(`Users already exist: ${Count} users`);
+    return;
   }
-  else
-    console.log(`Users already exist: ${Users.length} users`);
-} /* End of 'InitializeTestUsers' function */
 
-/*
- * Set banned status for user.
- * ARGUMENTS:
- *   - Username:
- *       string Username;
- *   - Banned flag:
- *       boolean Banned;
- * RETURNS:
- *   (boolean) success status.
- */
-function SetBanned(Username, Banned)
+  for (let Index = 0; Index < TestUsers.length; Index++)
+  {
+    const UserData = TestUsers[Index];
+    await InsertUser(
+      UserData.username,
+      UserData.email,
+      await Bcrypt.hash(UserData.password, 10),
+      UserData.webrtcId,
+      UserData.IsAdmin === true
+    );
+  }
+
+  console.log(`Test users initialized: ${TestUsers.length} users`);
+}
+
+async function FindAllWorlds()
 {
-  const Users = ReadUsers();
-  const User = Users.find(U => U.username === Username.toLowerCase());
-  if (!User)
-    return false;
-  User.banned = Banned;
-  WriteUsers(Users);
-  return true;
-} /* End of 'SetBanned' function */
+  const Worlds = await World.find().sort({ createdAt: -1 }).lean();
+  return Worlds.map(WorldToPlain);
+}
 
-/*
- * Append action entry to logs file.
- * ARGUMENTS:
- *   - Username:
- *       string Username;
- *   - Action description:
- *       string Action;
- * RETURNS: None.
- */
-function WriteLog(Username, Action)
+async function FindWorldById(WorldId)
 {
-  EnsureDirectory();
-  let Logs = [];
+  const WorldDoc = await World.findOne({ worldId: WorldId }).lean();
+  return WorldToPlain(WorldDoc);
+}
 
-  if (Fs.existsSync(LogsFile))
-    Logs = JSON.parse(Fs.readFileSync(LogsFile, 'utf8'));
-
-  Logs.push({ username: Username, action: Action, time: new Date().toISOString() });
-  Fs.writeFileSync(LogsFile, JSON.stringify(Logs, null, 2));
-} /* End of 'WriteLog' function */
-
-/*
- * Read all log entries.
- * ARGUMENTS: None.
- * RETURNS:
- *   (array) log entries.
- */
-function ReadLogs()
+async function InsertWorld(WorldData)
 {
-  if (!Fs.existsSync(LogsFile)) return [];
-  return JSON.parse(Fs.readFileSync(LogsFile, 'utf8'));
-} /* End of 'ReadLogs' function */
+  await World.create({
+    worldId: WorldData.id,
+    name: WorldData.name,
+    seed: WorldData.seed,
+    worldType: WorldData.worldType || 'default',
+    creatorId: WorldData.creatorId,
+    creatorUsername: WorldData.creatorUsername,
+    players: WorldData.players || [],
+    createdAt: WorldData.createdAt ? new Date(WorldData.createdAt) : new Date()
+  });
+  return WorldData;
+}
 
-module.exports = 
+async function UpdateWorld(WorldId, UpdateData)
 {
+  const WorldDoc = await World.findOneAndUpdate(
+    { worldId: WorldId },
+    { $set: UpdateData },
+    { new: true }
+  ).lean();
+  return WorldToPlain(WorldDoc);
+}
+
+async function DeleteWorld(WorldId)
+{
+  const Result = await World.deleteOne({ worldId: WorldId });
+  await Chunk.deleteMany({ worldId: WorldId });
+  return Result.deletedCount > 0;
+}
+
+async function DeleteAllWorlds()
+{
+  await World.deleteMany({});
+  await Chunk.deleteMany({});
+}
+
+async function FindChunksInArea(WorldId, MinX, MaxX, MinZ, MaxZ)
+{
+  const Chunks = await Chunk.find({
+    worldId: WorldId,
+    chunkX: { $gte: MinX, $lte: MaxX },
+    chunkZ: { $gte: MinZ, $lte: MaxZ }
+  }).lean();
+
+  return Chunks.map(Entry => ({
+    chunkX: Entry.chunkX,
+    chunkZ: Entry.chunkZ,
+    blocks: Entry.blocks.toString('base64'),
+    updatedAt: Entry.updatedAt
+  }));
+}
+
+async function FindChunk(WorldId, ChunkX, ChunkZ)
+{
+  const ChunkDoc = await Chunk.findOne({ worldId: WorldId, chunkX: ChunkX, chunkZ: ChunkZ }).lean();
+  if (!ChunkDoc) return null;
+
+  return {
+    chunkX: ChunkDoc.chunkX,
+    chunkZ: ChunkDoc.chunkZ,
+    blocks: ChunkDoc.blocks.toString('base64'),
+    updatedAt: ChunkDoc.updatedAt
+  };
+}
+
+async function SaveChunk(WorldId, ChunkX, ChunkZ, BlocksBuffer)
+{
+  if (!BlocksBuffer || BlocksBuffer.length !== CHUNK_BLOCK_BYTES)
+    throw new Error(`Invalid chunk size: expected ${CHUNK_BLOCK_BYTES} bytes`);
+
+  await Chunk.findOneAndUpdate(
+    { worldId: WorldId, chunkX: ChunkX, chunkZ: ChunkZ },
+    {
+      worldId: WorldId,
+      chunkX: ChunkX,
+      chunkZ: ChunkZ,
+      blocks: BlocksBuffer,
+      updatedAt: new Date()
+    },
+    { upsert: true, new: true }
+  );
+}
+
+module.exports = {
   FindUserByUsername,
   FindUserByEmail,
+  FindUserById,
   InsertUser,
   UpdateLastLogin,
-  FindUserById,
+  UpdateUserPassword,
   GetAllUsers,
-  InitializeTestUsers,
   ReadUsers,
-  WriteUsers,
+  IsUserAdmin,
   SetBanned,
+  SetUserAdmin,
   WriteLog,
   ReadLogs,
-  IsUserAdmin
+  SaveResetCode,
+  FindResetCode,
+  DeleteResetCode,
+  InitializeTestUsers,
+  FindAllWorlds,
+  FindWorldById,
+  InsertWorld,
+  UpdateWorld,
+  DeleteWorld,
+  DeleteAllWorlds,
+  FindChunksInArea,
+  FindChunk,
+  SaveChunk,
+  CHUNK_BLOCK_BYTES
 };
-
-/* END OF 'storage.js' FILE */

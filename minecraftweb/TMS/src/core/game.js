@@ -8,6 +8,8 @@ import { Controller } from '../physics/controller.js';
 import { Camera } from '../renderer/camera.js';
 import { Multiplayer } from '../network/multiplayer.js';
 import { PlayerRenderer } from '../renderer/playerRenderer.js';
+import { WorldStorage } from '../network/worldStorage.js';
+import { Chunk } from '../world/chunk.js';
 
 /**
  * Находит первую целую координату (воксель), которую пересекает луч из камеры.
@@ -33,6 +35,8 @@ export class Game
         this.meshes = [];
         this.multiplayer = new Multiplayer();
         this.playerRenderer = null;
+        this.worldStorage = null;
+        this.worldId = null;
     }
 
     async init()
@@ -49,15 +53,17 @@ export class Game
             }
         }
 
-        // this.world.AddChunk(this.renderer, 0, 0).generateTerrain();
+        this.worldId = new URLSearchParams(window.location.search).get('worldId') || 'default';
+        const Token = localStorage.getItem('ls_token');
+        this.worldStorage = new WorldStorage(this.worldId, Token);
+        await this.worldStorage.loadArea(this.world, -distance, distance - 1, -distance, distance - 1);
 
-        // this.world.AddChunk(0, 1).generateTerrain();
-        // this.world.AddChunk(1, 0);
-        // const meshes = this.world.getMesh();
-        // for (const mesh of meshes)
-        // {
-        //     this.meshes.push(this.meshUploader.Upload(mesh));
-        // }
+        window.addEventListener('beforeunload', () =>
+        {
+            this.multiplayer.disconnect();
+            if (this.worldStorage)
+                this.worldStorage.flush();
+        });
         this.player.camera.position = [0, 55, 0];
         this.player.camera.update(90, this.renderer.webgpu.canvas.width / this.renderer.webgpu.canvas.height);
 
@@ -69,12 +75,28 @@ export class Game
         this.playerRenderer = new PlayerRenderer(this.renderer);
         await this.playerRenderer.init();
 
-        const WorldId = new URLSearchParams(window.location.search).get('worldId') || 'default';
+        const WorldId = this.worldId;
         const Username = localStorage.getItem('ls_username') || 'guest';
+        this.multiplayer.bindLocalPlayer(this.player);
         this.multiplayer.connect(WorldId, Username);
 
-        window.addEventListener('beforeunload', () => this.multiplayer.disconnect());
+    }
 
+    queueChunkSave(WorldX, WorldZ)
+    {
+        if (!this.worldStorage)
+            return;
+
+        const ChunkRef = this.world.getChunk(WorldX, WorldZ);
+        if (ChunkRef)
+            this.worldStorage.queueChunkSave(WorldX, WorldZ, ChunkRef);
+    }
+
+    queueChunkSaveAtBlock(x, y, z)
+    {
+        const ChunkX = Math.floor(x / Chunk.W);
+        const ChunkZ = Math.floor(z / Chunk.D);
+        this.queueChunkSave(ChunkX, ChunkZ);
     }
 
     start()
@@ -93,6 +115,7 @@ export class Game
             if (p != null)
             {
                 this.world.removeBlock(p.target.x, p.target.y, p.target.z);
+                this.queueChunkSaveAtBlock(p.target.x, p.target.y, p.target.z);
             }
         }
         if (this.input.mouseButtonsClick[2])
@@ -101,6 +124,7 @@ export class Game
             if (p != null)
             {
                 this.world.setBlock(p.previous.x, p.previous.y, p.previous.z, 1);
+                this.queueChunkSaveAtBlock(p.previous.x, p.previous.y, p.previous.z);
             }
         }
 

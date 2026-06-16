@@ -130,6 +130,28 @@ export class Chunk
     return block;
   }
 
+  exportBlocksBase64()
+  {
+    const Bytes = new Uint8Array(this.blocks.buffer, this.blocks.byteOffset, this.blocks.byteLength);
+    let Binary = '';
+    const Step = 8192;
+    for (let I = 0; I < Bytes.length; I += Step)
+    {
+      Binary += String.fromCharCode(...Bytes.subarray(I, I + Step));
+    }
+    return btoa(Binary);
+  }
+
+  loadBlocksBase64(Base64)
+  {
+    const Binary = atob(Base64);
+    const Bytes = new Uint8Array(Binary.length);
+    for (let I = 0; I < Binary.length; I++)
+      Bytes[I] = Binary.charCodeAt(I);
+    this.blocks = new Uint32Array(Bytes.buffer);
+    this.isDirty = true;
+  }
+
   async RebuildMesh()
   {
     const mesh = this.blocks;

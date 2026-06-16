@@ -3,459 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Сброс Пароля | Minecraft</title>
+    <title>Сброс Пароля | Minecraft Web</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
-    <style>
-        body, html 
-        {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            font-family: 'VT323', monospace;
-        }
-
-        #background-container 
-        {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-            background-color: #1a1a1a;
-        }
-
-        #background-container::after 
-        {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            pointer-events: none;
-        }
-
-        .forgot-container 
-        {
-            position: relative;
-            z-index: 2;
-            background-color: rgba(112, 112, 112, 0.95);
-            border: 4px solid #3c3c3c;
-            border-top-color: #7e7e7e;
-            border-left-color: #7e7e7e;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
-            padding: 40px;
-            width: 90%;
-            max-width: 450px;
-            text-align: center;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
-
-        .forgot-container h2 
-        {
-            font-family: 'Press Start 2P', cursive;
-            color: #ffffff;
-            font-size: 24px;
-            margin-bottom: 30px;
-            text-shadow: 4px 4px 0px #000000;
-            text-transform: uppercase;
-            line-height: 1.5;
-        }
-
-        .input-group 
-        {
-            margin-bottom: 20px;
-            text-align: left;
-        }
-
-        .input-group label 
-        {
-            display: block;
-            color: #ffffff;
-            font-size: 20px;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 0px #000000;
-        }
-
-        .input-group input 
-        {
-            width: 100%;
-            padding: 12px;
-            box-sizing: border-box;
-            background-color: #8b8b8b;
-            border: 2px solid #3c3c3c;
-            border-top-color: #5e5e5e;
-            border-left-color: #5e5e5e;
-            color: #000000;
-            font-size: 20px;
-            font-family: 'VT323', monospace;
-            outline: none;
-            box-shadow: inset 2px 2px 0px #3a3a3a;
-        }
-
-        .input-group input:focus 
-        {
-            border-color: #ffffff;
-            border-top-color: #ffffff;
-            border-left-color: #ffffff;
-        }
-
-        .btn-minecraft 
-        {
-            width: 100%;
-            padding: 15px;
-            background-color: #868686;
-            border: 2px solid #000000;
-            border-top-color: #fff;
-            border-left-color: #fff;
-            color: #ffffff;
-            font-family: 'Press Start 2P', cursive;
-            font-size: 14px;
-            cursor: pointer;
-            text-shadow: 2px 2px 0px #000;
-            margin-top: 10px;
-            box-shadow: inset -2px -2px 0px #3a3a3a;
-            transition: all 0.1s;
-        }
-
-        .btn-minecraft:hover 
-        {
-            background-color: #7a9a60;
-            color: #ffffff;
-            border-top-color: #bfff80;
-            border-left-color: #bfff80;
-            box-shadow: inset -2px -2px 0px #4d6638;
-        }
-
-        .btn-minecraft:active 
-        {
-            box-shadow: inset 2px 2px 0px #3a3a3a;
-            border-top-color: #3c3c3c;
-            border-left-color: #3c3c3c;
-        }
-
-        .footer-links 
-        {
-            margin-top: 25px;
-            font-size: 18px;
-        }
-
-        .footer-links a 
-        {
-            color: #55ff55;
-            text-decoration: none;
-            text-shadow: 1px 1px 0px #000;
-        }
-
-        .footer-links a:hover 
-        {
-            color: #88ff88;
-            text-decoration: underline;
-        }
-
-        .error-message 
-        {
-            color: #ff5555;
-            font-size: 18px;
-            margin-top: 15px;
-            text-shadow: 1px 1px 0px #000;
-            display: none;
-        }
-
-        .success-message 
-        {
-            color: #55ff55;
-            font-size: 18px;
-            margin-top: 15px;
-            text-shadow: 1px 1px 0px #000;
-            display: none;
-        }
-
-        .loading 
-        {
-            display: none;
-            margin: 15px auto;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255,255,255,0.3);
-            border-radius: 50%;
-            border-top-color: #fff;
-            animation: spin 1s ease-in-out infinite;
-        }
-
-        .hidden 
-        {
-            display: none;
-        }
-    </style>
+    <link rel="stylesheet" href="/css/Common.css">
+    <link rel="stylesheet" href="/css/Forgot.css">
 </head>
 <body>
 
-    <div id="background-container"></div>
+    <div id="BackgroundContainer"></div>
 
-    <div class="forgot-container">
+    <div class="ForgotContainer">
         <h2>Сброс Пароля</h2>
-        
-        <div id="step1">
-            <form id="forgotForm">
-                <div class="input-group">
-                    <label for="forgotEmail">Ваш Email</label>
-                    <input type="email" id="forgotEmail" name="email" required placeholder="steve@minecraft.com">
+
+        <div id="Step1">
+            <form id="ForgotForm">
+                <div class="InputGroup">
+                    <label for="ForgotEmail">Ваш Email</label>
+                    <input type="email" id="ForgotEmail" name="email" required placeholder="steve@minecraft.com">
                 </div>
-                
-                <button type="submit" class="btn-minecraft" id="forgotBtn">Отправить код</button>
-                <div class="loading" id="loading"></div>
-                <div class="error-message" id="errorMessage"></div>
-                <div class="success-message" id="successMessage"></div>
+
+                <button type="submit" class="BtnMinecraft" id="ForgotBtn">Отправить код</button>
+                <div class="Loading" id="Loading"></div>
+                <div class="ErrorMessage" id="ErrorMessage"></div>
+                <div class="SuccessMessage" id="SuccessMessage"></div>
             </form>
-            
-            <div class="footer-links">
+
+            <div class="FooterLinks">
                 <a href="/">Войти</a> • <a href="/register">Регистрация</a>
             </div>
         </div>
-        
-        <div id="step2" class="hidden">
-            <form id="verifyForm">
-                <div class="input-group">
-                    <label for="verifyCode">Код подтверждения</label>
-                    <input type="text" id="verifyCode" name="code" required placeholder="123456">
+
+        <div id="Step2" class="Hidden">
+            <form id="VerifyForm">
+                <div class="InputGroup">
+                    <label for="VerifyCode">Код подтверждения</label>
+                    <input type="text" id="VerifyCode" name="code" required placeholder="123456">
                 </div>
-                
-                <button type="submit" class="btn-minecraft" id="verifyBtn">Проверить код</button>
-                <div class="loading" id="loading2"></div>
-                <div class="error-message" id="verifyErrorMessage"></div>
-                <div class="success-message" id="verifySuccessMessage"></div>
+
+                <button type="submit" class="BtnMinecraft" id="VerifyBtn">Проверить код</button>
+                <div class="Loading" id="Loading2"></div>
+                <div class="ErrorMessage" id="VerifyErrorMessage"></div>
+                <div class="SuccessMessage" id="VerifySuccessMessage"></div>
             </form>
         </div>
-        
-        <div id="step3" class="hidden">
-            <form id="resetForm">
-                <div class="input-group">
-                    <label for="newPassword">Новый пароль</label>
-                    <input type="password" id="newPassword" name="password" required placeholder="••••••••">
+
+        <div id="Step3" class="Hidden">
+            <form id="ResetForm">
+                <div class="InputGroup">
+                    <label for="NewPassword">Новый пароль</label>
+                    <input type="password" id="NewPassword" name="password" required placeholder="••••••••">
                 </div>
-                
-                <div class="input-group">
-                    <label for="confirmNewPassword">Повторите пароль</label>
-                    <input type="password" id="confirmNewPassword" name="confirmPassword" required placeholder="••••••••">
+
+                <div class="InputGroup">
+                    <label for="ConfirmNewPassword">Повторите пароль</label>
+                    <input type="password" id="ConfirmNewPassword" name="confirmPassword" required placeholder="••••••••">
                 </div>
-                
-                <button type="submit" class="btn-minecraft" id="resetBtn">Сменить пароль</button>
-                <div class="loading" id="loading3"></div>
-                <div class="error-message" id="resetErrorMessage"></div>
-                <div class="success-message" id="resetSuccessMessage"></div>
+
+                <button type="submit" class="BtnMinecraft" id="ResetBtn">Сменить пароль</button>
+                <div class="Loading" id="Loading3"></div>
+                <div class="ErrorMessage" id="ResetErrorMessage"></div>
+                <div class="SuccessMessage" id="ResetSuccessMessage"></div>
             </form>
         </div>
-        
-        <div id="step4" class="hidden">
-            <div class="success-message" style="display: block; margin-bottom: 20px;">
+
+        <div id="Step4" class="Hidden">
+            <div class="SuccessMessage StepSuccess">
                 Пароль успешно изменен!
             </div>
-            <a href="/" class="btn-minecraft">Войти</a>
+            <a href="/" class="BtnMinecraft">Войти</a>
         </div>
     </div>
 
-    <script>
-        let emailToReset = '';
-        let tempCode = '';
-
-        function showError(elementId, message)
-        {
-            const errorEl = document.getElementById(elementId);
-            errorEl.textContent = message;
-            errorEl.style.display = 'block';
-        } /* End of 'showError' function */
-
-        function showSuccess(elementId, message)
-        {
-            const successEl = document.getElementById(elementId);
-            successEl.textContent = message;
-            successEl.style.display = 'block';
-        } /* End of 'showSuccess' function */
-
-        async function handleForgot(event)
-        {
-            event.preventDefault();
-            
-            const email = document.getElementById('forgotEmail').value.trim();
-            const forgotBtn = document.getElementById('forgotBtn');
-            const loading = document.getElementById('loading');
-            const errorMessage = document.getElementById('errorMessage');
-            const successMessage = document.getElementById('successMessage');
-            
-            errorMessage.style.display = 'none';
-            successMessage.style.display = 'none';
-            
-            forgotBtn.style.display = 'none';
-            loading.style.display = 'block';
-            
-            try
-            {
-                const response = await fetch('/api/forgot-password', 
-                {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email })
-                });
-                
-                const data = await response.json();
-                
-                if (response.ok)
-                {
-                    emailToReset = email;
-                    showSuccess('successMessage', 'Код отправлен на почту');
-                    document.getElementById('step1').classList.add('hidden');
-                    document.getElementById('step2').classList.remove('hidden');
-                }
-                else
-                {
-                    showError('errorMessage', data.error || 'Ошибка');
-                }
-            }
-            catch (error)
-            {
-                showError('errorMessage', 'Ошибка подключения');
-                console.error('Forgot error:', error);
-            }
-            finally
-            {
-                forgotBtn.style.display = 'block';
-                loading.style.display = 'none';
-            }
-        } /* End of 'handleForgot' function */
-
-        async function handleVerify(event)
-        {
-            event.preventDefault();
-            
-            const code = document.getElementById('verifyCode').value.trim();
-            const verifyBtn = document.getElementById('verifyBtn');
-            const loading = document.getElementById('loading2');
-            const errorMessage = document.getElementById('verifyErrorMessage');
-            const successMessage = document.getElementById('verifySuccessMessage');
-            
-            errorMessage.style.display = 'none';
-            successMessage.style.display = 'none';
-            
-            verifyBtn.style.display = 'none';
-            loading.style.display = 'block';
-            
-            try
-            {
-                const response = await fetch('/api/reset-password', 
-                {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: emailToReset, code: code, password: 'temp' })
-                });
-                
-                const data = await response.json();
-                
-                if (response.ok)
-                {
-                    tempCode = code;
-                    showSuccess('verifySuccessMessage', 'Код верифицирован');
-                    document.getElementById('step2').classList.add('hidden');
-                    document.getElementById('step3').classList.remove('hidden');
-                }
-                else
-                {
-                    showError('verifyErrorMessage', data.error || 'Неверный код');
-                }
-            }
-            catch (error)
-            {
-                showError('verifyErrorMessage', 'Ошибка');
-            }
-            finally
-            {
-                verifyBtn.style.display = 'block';
-                loading.style.display = 'none';
-            }
-        } /* End of 'handleVerify' function */
-
-        async function handleReset(event)
-        {
-            event.preventDefault();
-            
-            const newPassword = document.getElementById('newPassword').value;
-            const confirmNewPassword = document.getElementById('confirmNewPassword').value;
-            const resetBtn = document.getElementById('resetBtn');
-            const loading = document.getElementById('loading3');
-            const errorMessage = document.getElementById('resetErrorMessage');
-            const successMessage = document.getElementById('resetSuccessMessage');
-            
-            errorMessage.style.display = 'none';
-            successMessage.style.display = 'none';
-            
-            if (newPassword !== confirmNewPassword)
-            {
-                showError('resetErrorMessage', 'Пароли не совпадают');
-                return;
-            }
-            
-            resetBtn.style.display = 'none';
-            loading.style.display = 'block';
-            
-            try
-            {
-                const response = await fetch('/api/reset-password', 
-                {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        email: emailToReset, 
-                        code: tempCode,
-                        password: newPassword
-                    })
-                });
-                
-                const data = await response.json();
-                
-                if (response.ok)
-                {
-                    showSuccess('resetSuccessMessage', 'Пароль изменен');                    
-                    document.getElementById('step3').classList.add('hidden');
-                    document.getElementById('step4').classList.remove('hidden');
-                }
-                else
-                {
-                    showError('resetErrorMessage', data.error || 'Ошибка');
-                }
-            }
-            catch (error)
-            {
-                showError('resetErrorMessage', 'Ошибка подключения');
-                console.error('Reset error:', error);
-            }
-            finally
-            {
-                resetBtn.style.display = 'block';
-                loading.style.display = 'none';
-            }
-        } /* End of 'handleReset' function */
-
-        function init()
-        {
-            const forgotForm = document.getElementById('forgotForm');
-            forgotForm.addEventListener('submit', handleForgot);
-            
-            const verifyForm = document.getElementById('verifyForm');
-            verifyForm.addEventListener('submit', handleVerify);
-            
-            const resetForm = document.getElementById('resetForm');
-            resetForm.addEventListener('submit', handleReset);
-        } /* End of 'init' function */
-
-        init();
-    </script>
+    <script src="/scripts/Forgot.js"></script>
 </body>
 </html>

@@ -29,6 +29,12 @@ export class Multiplayer
     this.enabled = false;
     this.lastSend = 0;
     this.colorIndex = 0;
+    this.localPlayer = null;
+  }
+
+  bindLocalPlayer(Player)
+  {
+    this.localPlayer = Player;
   }
 
   connect(WorldId, Username)
@@ -48,21 +54,17 @@ export class Multiplayer
     this.socket.on('connect', () =>
     {
       this.myId = this.socket.id;
-      //this.remotePlayers.set(this.myId, new RemotePlayer(this.myId, this.username, this.pickColor()));      
       this.socket.emit('p2p_join', { room: this.roomId, name: this.username });
     });
 
     this.socket.on('p2p_peers', (Peers) =>
     {
-      Peers.forEach(Peer => this.createPeer(Peer.id, Peer.name, true));
+      Peers.forEach(Peer => this.createPeer(Peer.id, Peer.name));
     });
 
     this.socket.on('p2p_new_peer', (Data) =>
     {
-      this.createPeer(Data.id, Data.name, false);
-      console.log('Multiplayer: New peer connected', Data.id, 'Name:', Data.name);
-      console.log('Multiplayer: Total peers:', Object.keys(this.peers).length);
-      
+      this.createPeer(Data.id, Data.name);
     });
 
     this.socket.on('p2p_signal', (Data) =>
@@ -98,14 +100,14 @@ export class Multiplayer
     return this.remotePlayers.get(PeerId);
   }
 
-  createPeer(PeerId, PeerName, IsInitiator)
+  createPeer(PeerId, PeerName)
   {
-    if (PeerId === this.myId || this.peers[PeerId])
-    {
-      console.warn('Multiplayer: Peer already exists or is self', PeerId);return;
+    if (!this.myId || PeerId === this.myId || this.peers[PeerId])
+      return;
 
-    }
+    this.ensureRemotePlayer(PeerId, PeerName);
 
+    const IsInitiator = this.myId < PeerId;
     const Pc = new RTCPeerConnection(RTC_CONFIG);
     this.peers[PeerId] = { pc: Pc, dc: null, name: PeerName };
 
@@ -131,6 +133,12 @@ export class Multiplayer
     const SetupChannel = (Dc) =>
     {
       this.peers[PeerId].dc = Dc;
+      Dc.onopen = () =>
+      {
+        this.lastSend = 0;
+        if (this.localPlayer)
+          this.sendLocalState(this.localPlayer, true);
+      };
       Dc.onmessage = (Event) =>
       {
         try
@@ -233,12 +241,12 @@ export class Multiplayer
     delete this.iceBuf[PeerId];
   }
 
-  sendLocalState(Player)
+  sendLocalState(Player, ForceSend = false)
   {
     if (!this.enabled) return;
 
     const Now = performance.now();
-    if (Now - this.lastSend < SEND_INTERVAL_MS) return;
+    if (!ForceSend && Now - this.lastSend < SEND_INTERVAL_MS) return;
     this.lastSend = Now;
 
     const Packet = JSON.stringify({
@@ -261,7 +269,7 @@ export class Multiplayer
 
   getOnlineCount()
   {
-    return this.remotePlayers.size + (this.enabled ? 1 : 1);
+    return this.remotePlayers.size + 1;
   }
 
   getConnectedPeerCount()

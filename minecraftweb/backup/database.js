@@ -1,35 +1,7 @@
-/***************************************************************
- * Copyright (C) 2026
- *    Computer Graphics Support Group of 30 Phys-Math Lyceum
- ***************************************************************/
+const { ConnectMongo } = require('./db/connection');
+const Storage = require('./storage');
 
-/* FILE NAME   : database.js
- * PURPOSE     : Minecraft Web.
- *               Database wrapper for file-based storage.
- * PROGRAMMER  : CGSG'Sr'2025.
- *               Kochugueva Maria (MK3),
- *               Arsentev Artemy (AA4),
- *               Nechaev Vladimir (VN4).
- * LAST UPDATE : 05.06.2026
- * NOTE        : None.
- *
- * No part of this file may be changed without agreement of
- * Computer Graphics Support Group of 30 Phys-Math Lyceum
- */
-
-const 
-{
-  FindUserByUsername,
-  FindUserByEmail,
-  InsertUser,
-  UpdateLastLogin,
-  FindUserById,
-  GetAllUsers,
-  InitializeTestUsers,
-  ReadUsers
-} = require('./storage');
-
-const TestUsers = 
+const TestUsers =
 [
   {
     username: 'steve',
@@ -54,17 +26,9 @@ const TestUsers =
   }
 ];
 
-module.exports = 
+module.exports =
 {
+  ConnectMongo,
   TestUsers,
-  FindUserByUsername,
-  FindUserByEmail,
-  InsertUser,
-  UpdateLastLogin,
-  FindUserById,
-  GetAllUsers,
-  InitializeTestUsers,
-  ReadUsers
+  ...Storage
 };
-
-/* END OF 'database.js' FILE */

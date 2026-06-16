@@ -1,10 +1,8 @@
 const Express = require('express');
-const Fs = require('fs');
-const Path = require('path');
 const Jwt = require('jsonwebtoken');
 const Bcrypt = require('bcryptjs');
 const Nodemailer = require('nodemailer');
-const 
+const
 {
   HashPassword,
   VerifyPassword,
@@ -19,12 +17,30 @@ const
   GetAllUsers,
   JwtSecret
 } = require('../auth');
-const { SetBanned, WriteLog, ReadLogs, IsUserAdmin, ReadUsers, WriteUsers } = require('../storage');
+const
+{
+  SetBanned,
+  WriteLog,
+  ReadLogs,
+  IsUserAdmin,
+  UpdateUserPassword,
+  SaveResetCode,
+  FindResetCode,
+  DeleteResetCode,
+  FindAllWorlds,
+  FindWorldById,
+  InsertWorld,
+  UpdateWorld,
+  DeleteWorld,
+  DeleteAllWorlds,
+  FindChunksInArea,
+  FindChunk,
+  SaveChunk,
+  CHUNK_BLOCK_BYTES
+} = require('../storage');
 
 const Router = Express.Router();
 const JwtSecretFallback = JwtSecret || process.env.SESSION_SECRET || 'webminecraft_secret_key_2024';
-const WorldsFile = Path.join(__dirname, '..', 'data', 'worlds.json');
-const ResetCodes = {};
 
 function GetBearerToken(Req)
 {
@@ -32,43 +48,30 @@ function GetBearerToken(Req)
   return AuthHeader && AuthHeader.split(' ')[1];
 }
 
-function GetUserFromToken(Token)
+async function GetUserFromToken(Token)
 {
   const Decoded = Jwt.verify(Token, JwtSecretFallback);
   return FindUserById(Decoded.id);
 }
 
-function LoadWorlds()
-{
-  if (!Fs.existsSync(WorldsFile)) return [];
-  return JSON.parse(Fs.readFileSync(WorldsFile, 'utf8'));
-}
-
-function SaveWorlds(Worlds)
-{
-  const DataDir = Path.dirname(WorldsFile);
-  if (!Fs.existsSync(DataDir)) Fs.mkdirSync(DataDir, { recursive: true });
-  Fs.writeFileSync(WorldsFile, JSON.stringify(Worlds, null, 2));
-}
-
 function GetOnlinePlayerCount(WorldId)
 {
-  if (!global.io) 
+  if (!global.io)
     return 0;
   const Room = global.io.sockets.adapter.rooms.get(WorldId);
   return Room ? Room.size : 0;
 }
 
-function RequireAuth(Req, Res, Next)
+async function RequireAuth(Req, Res, Next)
 {
   const Token = GetBearerToken(Req);
-  if (!Token) 
+  if (!Token)
     return Res.status(401).json({ error: 'Token required' });
 
   try
   {
-    const User = GetUserFromToken(Token);
-    if (!User) 
+    const User = await GetUserFromToken(Token);
+    if (!User)
       return Res.status(404).json({ error: 'User not found' });
     Req.user = User;
     Next();
@@ -82,9 +85,7 @@ function RequireAuth(Req, Res, Next)
 function RequireAdmin(Req, Res, Next)
 {
   if (!IsUserAdmin(Req.user))
-  {
     return Res.status(403).json({ error: 'Access denied. Admin only.' });
-  }
   Next();
 }
 
@@ -111,7 +112,7 @@ Router.post('/register', async (Req, Res) =>
       Hashed,
       `webrtc-${Login}-${Date.now().toString(36)}`
     );
-    WriteLog(Login, 'зарегистрировался');
+    await WriteLog(Login, 'зарегистрировался');
 
     const Token = GenerateToken({ _id: User.id, username: User.username });
     Res.status(201).json({
@@ -143,23 +144,23 @@ Router.post('/login', async (Req, Res) =>
   try
   {
     const User = await FindUserByUsername(username.toLowerCase());
-    if (!User) 
+    if (!User)
       return Res.status(401).json({ error: 'Invalid username or password' });
 
-    if (User.banned) 
+    if (User.banned)
       return Res.status(403).json({ error: 'Вы заблокированы' });
 
     if (!(await VerifyPassword(password, User.password)))
       return Res.status(401).json({ error: 'Invalid username or password' });
 
     await UpdateLastLogin(User.id);
-    WriteLog(User.username, 'вошёл в аккаунт');
+    await WriteLog(User.username, 'вошёл в аккаунт');
 
     const Token = GenerateToken({ _id: User.id, username: User.username });
     Res.json({
       message: 'Login successful',
       token: Token,
-      user: 
+      user:
       {
         id: User.id,
         username: User.username,
@@ -212,9 +213,7 @@ Router.get('/verify-token', async (Req, Res) =>
     const User = await FindUserById(Jwt.verify(Token, JwtSecretFallback).id);
     if (!User) return Res.status(404).json({ valid: false, error: 'User not found' });
     if (User.banned)
-    {
       return Res.status(403).json({ valid: true, banned: true, message: 'User is banned' });
-    }
 
     Res.json({
       valid: true,
@@ -228,45 +227,45 @@ Router.get('/verify-token', async (Req, Res) =>
   }
 });
 
-Router.get('/logs', RequireAuth, RequireAdmin, (Req, Res) =>
+Router.get('/logs', RequireAuth, RequireAdmin, async (Req, Res) =>
 {
-  Res.json({ logs: ReadLogs() });
+  Res.json({ logs: await ReadLogs() });
 });
 
-Router.post('/ban', RequireAuth, RequireAdmin, (Req, Res) =>
+Router.post('/ban', RequireAuth, RequireAdmin, async (Req, Res) =>
 {
   const { username } = Req.body;
   if (!username) return Res.status(400).json({ error: 'Username required' });
 
-  const Target = FindUserByUsername(username);
+  const Target = await FindUserByUsername(username);
   if (Target && IsUserAdmin(Target))
     return Res.status(400).json({ error: 'Cannot ban admin' });
 
-  if (!SetBanned(username, true)) 
+  if (!(await SetBanned(username, true)))
     return Res.status(404).json({ error: 'User not found' });
 
-  WriteLog(Req.user.username, `забанил пользователя ${username}`);
+  await WriteLog(Req.user.username, `забанил пользователя ${username}`);
   Res.json({ message: `${username} заблокирован` });
 });
 
-Router.post('/unban', RequireAuth, RequireAdmin, (Req, Res) =>
+Router.post('/unban', RequireAuth, RequireAdmin, async (Req, Res) =>
 {
   const { username } = Req.body;
-  if (!username) 
+  if (!username)
     return Res.status(400).json({ error: 'Username required' });
 
-  if (!SetBanned(username, false))
+  if (!(await SetBanned(username, false)))
     return Res.status(404).json({ error: 'User not found' });
 
-  WriteLog(Req.user.username, `разбанил пользователя ${username}`);
+  await WriteLog(Req.user.username, `разбанил пользователя ${username}`);
   Res.json({ message: `${username} разблокирован` });
 });
 
-Router.get('/worlds', RequireAuth, (Req, Res) =>
+Router.get('/worlds', RequireAuth, async (Req, Res) =>
 {
   try
   {
-    const Worlds = LoadWorlds().map(World => ({
+    const Worlds = (await FindAllWorlds()).map(World => ({
       ...World,
       onlineCount: GetOnlinePlayerCount(World.id)
     }));
@@ -279,12 +278,12 @@ Router.get('/worlds', RequireAuth, (Req, Res) =>
   }
 });
 
-Router.get('/worlds/:id', RequireAuth, (Req, Res) =>
+Router.get('/worlds/:id', RequireAuth, async (Req, Res) =>
 {
   try
   {
-    const World = LoadWorlds().find(W => W.id === Req.params.id);
-    if (!World) 
+    const World = await FindWorldById(Req.params.id);
+    if (!World)
       return Res.status(404).json({ error: 'World not found' });
     Res.json({ world: World });
   }
@@ -295,17 +294,15 @@ Router.get('/worlds/:id', RequireAuth, (Req, Res) =>
   }
 });
 
-Router.post('/worlds', RequireAuth, (Req, Res) =>
+Router.post('/worlds', RequireAuth, async (Req, Res) =>
 {
   try
   {
     const { name, seed, worldType } = Req.body;
     if (!name || !name.trim())
-    {
       return Res.status(400).json({ error: 'World name is required' });
-    }
 
-    const World = 
+    const World =
     {
       id: `world-${Date.now()}`,
       name: name.trim(),
@@ -317,12 +314,10 @@ Router.post('/worlds', RequireAuth, (Req, Res) =>
       createdAt: new Date().toISOString()
     };
 
-    const Worlds = LoadWorlds();
-    Worlds.push(World);
-    SaveWorlds(Worlds);
-    WriteLog(Req.user.username, `создал мир "${World.name}"`);
+    await InsertWorld(World);
+    await WriteLog(Req.user.username, `создал мир "${World.name}"`);
 
-    if (global.io) 
+    if (global.io)
       global.io.emit('world_created', { world: World });
     Res.status(201).json({ message: 'World created successfully', world: World });
   }
@@ -333,19 +328,16 @@ Router.post('/worlds', RequireAuth, (Req, Res) =>
   }
 });
 
-Router.post('/worlds/:id/join', RequireAuth, (Req, Res) =>
+Router.post('/worlds/:id/join', RequireAuth, async (Req, Res) =>
 {
   try
   {
-    const Worlds = LoadWorlds();
-    const Index = Worlds.findIndex(W => W.id === Req.params.id);
-    if (Index === -1) 
+    const World = await FindWorldById(Req.params.id);
+    if (!World)
       return Res.status(404).json({ error: 'World not found' });
 
-    const World = Worlds[Index];
     const Existing = World.players.find(P => P.username === Req.user.username);
 
-    //if player joins first time
     if (!Existing)
     {
       World.players.push({
@@ -354,23 +346,22 @@ Router.post('/worlds/:id/join', RequireAuth, (Req, Res) =>
         username: Req.user.username,
         joinedAt: new Date().toISOString()
       });
-      WriteLog(Req.user.username, `вошёл в мир "${World.name}" (${World.id})`);
+      await WriteLog(Req.user.username, `вошёл в мир "${World.name}" (${World.id})`);
     }
-    //if player reloads page
     else if (Req.body.socketId)
     {
       Existing.socket_id = Req.body.socketId;
     }
 
-    SaveWorlds(Worlds);
+    await UpdateWorld(World.id, { players: World.players });
 
     if (global.io)
     {
       const LastPlayer = World.players.find(P => P.username === Req.user.username);
-      global.io.emit('player_joined', 
+      global.io.emit('player_joined',
       {
         worldId: World.id,
-        player: 
+        player:
         {
           id: LastPlayer.socket_id || LastPlayer.id,
           username: LastPlayer.username,
@@ -388,13 +379,92 @@ Router.post('/worlds/:id/join', RequireAuth, (Req, Res) =>
   }
 });
 
-Router.delete('/worlds', RequireAuth, RequireAdmin, (Req, Res) =>
+Router.get('/worlds/:id/chunks', RequireAuth, async (Req, Res) =>
 {
   try
   {
-    SaveWorlds([]);
-    WriteLog(Req.user.username, 'удалил все миры');
-    if (global.io) 
+    const World = await FindWorldById(Req.params.id);
+    if (!World)
+      return Res.status(404).json({ error: 'World not found' });
+
+    const MinX = parseInt(Req.query.minX, 10);
+    const MaxX = parseInt(Req.query.maxX, 10);
+    const MinZ = parseInt(Req.query.minZ, 10);
+    const MaxZ = parseInt(Req.query.maxZ, 10);
+
+    if ([MinX, MaxX, MinZ, MaxZ].some(Value => Number.isNaN(Value)))
+      return Res.status(400).json({ error: 'Query params minX, maxX, minZ, maxZ are required' });
+
+    const Chunks = await FindChunksInArea(World.id, MinX, MaxX, MinZ, MaxZ);
+    Res.json({ worldId: World.id, chunks: Chunks });
+  }
+  catch (Error)
+  {
+    console.error('Error fetching chunks:', Error);
+    Res.status(500).json({ error: 'Failed to fetch chunks' });
+  }
+});
+
+Router.get('/worlds/:id/chunks/:chunkX/:chunkZ', RequireAuth, async (Req, Res) =>
+{
+  try
+  {
+    const World = await FindWorldById(Req.params.id);
+    if (!World)
+      return Res.status(404).json({ error: 'World not found' });
+
+    const ChunkX = parseInt(Req.params.chunkX, 10);
+    const ChunkZ = parseInt(Req.params.chunkZ, 10);
+    const ChunkData = await FindChunk(World.id, ChunkX, ChunkZ);
+
+    if (!ChunkData)
+      return Res.status(404).json({ error: 'Chunk not found' });
+
+    Res.json({ chunk: ChunkData });
+  }
+  catch (Error)
+  {
+    console.error('Error fetching chunk:', Error);
+    Res.status(500).json({ error: 'Failed to fetch chunk' });
+  }
+});
+
+Router.put('/worlds/:id/chunks/:chunkX/:chunkZ', RequireAuth, async (Req, Res) =>
+{
+  try
+  {
+    const World = await FindWorldById(Req.params.id);
+    if (!World)
+      return Res.status(404).json({ error: 'World not found' });
+
+    const ChunkX = parseInt(Req.params.chunkX, 10);
+    const ChunkZ = parseInt(Req.params.chunkZ, 10);
+    const { blocks } = Req.body;
+
+    if (!blocks || typeof blocks !== 'string')
+      return Res.status(400).json({ error: 'Field "blocks" (base64) is required' });
+
+    const BlocksBuffer = Buffer.from(blocks, 'base64');
+    if (BlocksBuffer.length !== CHUNK_BLOCK_BYTES)
+      return Res.status(400).json({ error: `Invalid chunk size: ${BlocksBuffer.length}` });
+
+    await SaveChunk(World.id, ChunkX, ChunkZ, BlocksBuffer);
+    Res.json({ message: 'Chunk saved', chunkX: ChunkX, chunkZ: ChunkZ });
+  }
+  catch (Error)
+  {
+    console.error('Error saving chunk:', Error);
+    Res.status(500).json({ error: 'Failed to save chunk' });
+  }
+});
+
+Router.delete('/worlds', RequireAuth, RequireAdmin, async (Req, Res) =>
+{
+  try
+  {
+    await DeleteAllWorlds();
+    await WriteLog(Req.user.username, 'удалил все миры');
+    if (global.io)
       global.io.emit('world_deleted', {});
     Res.json({ message: 'Все миры удалены' });
   }
@@ -404,21 +474,18 @@ Router.delete('/worlds', RequireAuth, RequireAdmin, (Req, Res) =>
   }
 });
 
-Router.delete('/worlds/:id', RequireAuth, RequireAdmin, (Req, Res) =>
+Router.delete('/worlds/:id', RequireAuth, RequireAdmin, async (Req, Res) =>
 {
   try
   {
-    const Worlds = LoadWorlds();
-    const Index = Worlds.findIndex(W => W.id === Req.params.id);
-    
-    if (Index === -1) 
+    const World = await FindWorldById(Req.params.id);
+    if (!World)
       return Res.status(404).json({ error: 'World not found' });
 
-    Worlds.splice(Index, 1);
-    SaveWorlds(Worlds);
-    WriteLog(Req.user.username, `удалил мир "${Req.params.id}"`);
+    await DeleteWorld(World.id);
+    await WriteLog(Req.user.username, `удалил мир "${Req.params.id}"`);
 
-    if (global.io) 
+    if (global.io)
       global.io.emit('world_deleted', { worldId: Req.params.id });
     Res.json({ message: 'World deleted successfully' });
   }
@@ -436,11 +503,11 @@ Router.post('/forgot-password', async (Req, Res) =>
   try
   {
     const User = await FindUserByEmail(email);
-    if (!User) 
+    if (!User)
       return Res.status(404).json({ error: 'Email не найден' });
 
     const Code = Math.floor(100000 + Math.random() * 900000).toString();
-    ResetCodes[email] = { code: Code, expires: Date.now() + 600000 };
+    await SaveResetCode(email, Code, new Date(Date.now() + 600000));
 
     if (process.env.EMAIL_USER)
     {
@@ -481,32 +548,24 @@ Router.post('/reset-password', async (Req, Res) =>
 
   try
   {
-    const Temp = ResetCodes[email];
-    if (!Temp) 
+    const Temp = await FindResetCode(email);
+    if (!Temp)
       return Res.status(400).json({ error: 'Код не найден. Повторите запрос.' });
-    if (Date.now() > Temp.expires)
+    if (Date.now() > new Date(Temp.expires).getTime())
     {
-      delete ResetCodes[email];
+      await DeleteResetCode(email);
       return Res.status(400).json({ error: 'Код истек' });
     }
     if (Temp.code !== code)
-    {
       return Res.status(400).json({ error: 'Неверный код подтверждения' });
-    }
     if (!password || password === 'temp')
-    {
       return Res.json({ message: 'Код верифицирован' });
-    }
 
-    const Users = ReadUsers();
-    const Index = Users.findIndex(U => U.email === email.toLowerCase());
-    if (Index === -1) 
+    const Updated = await UpdateUserPassword(email, await Bcrypt.hash(password, 10));
+    if (!Updated)
       return Res.status(404).json({ error: 'Email не найден' });
 
-    Users[Index].password = await Bcrypt.hash(password, 10);
-    WriteUsers(Users);
-    delete ResetCodes[email];
-
+    await DeleteResetCode(email);
     Res.json({ message: 'Пароль успешно изменен' });
   }
   catch (Error)
