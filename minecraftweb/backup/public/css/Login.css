@@ -1,0 +1,122 @@
+.LoginContainer
+{
+    position: relative;
+    z-index: 2;
+    background-color: rgba(112, 112, 112, 0.95);
+    border: 4px solid #3c3c3c;
+    border-top-color: #7e7e7e;
+    border-left-color: #7e7e7e;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+    padding: 40px;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.LoginContainer h2
+{
+    font-family: 'Press Start 2P', cursive;
+    color: #ffffff;
+    font-size: 24px;
+    margin-bottom: 30px;
+    text-shadow: 4px 4px 0px #000000;
+    text-transform: uppercase;
+    line-height: 1.5;
+}
+
+.InputGroup
+{
+    margin-bottom: 25px;
+    text-align: left;
+}
+
+.InputGroup label
+{
+    display: block;
+    color: #ffffff;
+    font-size: 20px;
+    margin-bottom: 10px;
+    text-shadow: 2px 2px 0px #000000;
+}
+
+.InputGroup input
+{
+    width: 100%;
+    padding: 12px;
+    box-sizing: border-box;
+    background-color: #8b8b8b;
+    border: 2px solid #3c3c3c;
+    border-top-color: #5e5e5e;
+    border-left-color: #5e5e5e;
+    color: #000000;
+    font-size: 20px;
+    font-family: 'VT323', monospace;
+    outline: none;
+    box-shadow: inset 2px 2px 0px #3a3a3a;
+}
+
+.InputGroup input:focus
+{
+    border-color: #ffffff;
+    border-top-color: #ffffff;
+    border-left-color: #ffffff;
+}
+
+.LoginContainer .BtnMinecraft
+{
+    width: 100%;
+    font-size: 14px;
+    margin-top: 10px;
+}
+
+.FooterLinks
+{
+    margin-top: 25px;
+    font-size: 18px;
+}
+
+.FooterLinks a
+{
+    color: #55ff55;
+    text-decoration: none;
+    text-shadow: 1px 1px 0px #000;
+}
+
+.FooterLinks a:hover
+{
+    color: #88ff88;
+    text-decoration: underline;
+}
+
+.ErrorMessage
+{
+    color: #ff5555;
+    font-size: 18px;
+    margin-top: 15px;
+    text-shadow: 1px 1px 0px #000;
+    display: none;
+}
+
+.SuccessMessage
+{
+    color: #55ff55;
+    font-size: 18px;
+    margin-top: 15px;
+    text-shadow: 1px 1px 0px #000;
+    display: none;
+}
+
+.Loading
+{
+    display: none;
+    margin: 15px auto;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: Spin 1s ease-in-out infinite;
+}

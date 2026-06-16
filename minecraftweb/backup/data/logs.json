@@ -1,0 +1,817 @@
+[
+  {
+    "username": "menion4ik",
+    "action": "вошёл в аккаунт",
+    "time": "2026-06-03T13:01:12.783Z"
+  },
+  {
+    "username": "menion4ik",
+    "action": "создал мир \"vlad dolbolob\"",
+    "time": "2026-06-03T13:01:20.100Z"
+  },
+  {
+    "username": "burmalda",
+    "action": "забанил пользователя menion4ik",
+    "time": "2026-06-03T13:02:02.767Z"
+  },
+  {
+    "username": "menion4ik",
+    "action": "создал мир \"vlad dolbolob\"",
+    "time": "2026-06-03T13:02:19.957Z"
+  },
+  {
+    "username": "menion4ik",
+    "action": "создал мир \"vlad dolbolob\"",
+    "time": "2026-06-03T13:02:34.169Z"
+  },
+  {
+    "username": "menion4ik",
+    "action": "создал мир \"loh\"",
+    "time": "2026-06-03T13:02:43.991Z"
+  },
+  {
+    "username": "steve",
+    "action": "вошёл в аккаунт",
+    "time": "2026-06-03T13:03:42.636Z"
+  },
+  {
+    "username": "steve",
+    "action": "создал мир \"vlad dolbolob\"",
+    "time": "2026-06-03T13:03:44.768Z"
+  },
+  {
+    "username": "steve",
+    "action": "вошёл в аккаунт",
+    "time": "2026-06-03T13:03:47.596Z"
+  },
+  {
+    "username": "steve",
+    "action": "создал мир \"vlad dolbolob\"",
+    "time": "2026-06-03T13:03:50.977Z"
+  },
+  {
+    "username": "steve",
+    "action": "вошёл в аккаунт",
+    "time": "2026-06-03T13:03:53.486Z"
+  },
+  {
+    "username": "steve",
+    "action": "вошёл в аккаунт",
+    "time": "2026-06-03T13:03:57.724Z"
+  },
+  {
+    "username": "steve",
+    "action": "создал мир \"vlad dolbolob\"",
+    "time": "2026-06-03T13:03:57.811Z"
+  },
+  {
+    "username": "steve",
+    "action": "вошёл в аккаунт",
+    "time": "2026-06-03T13:03:59.922Z"
+  },
+  {
+    "username": "steve",
+    "action": "создал мир \"vlad dolbolob\"",
+    "time": "2026-06-03T13:03:59.989Z"
+  },
+  {
+    "username": "steve",
+    "action": "создал мир \"vlad dolbolob\"",
+    "time": "2026-06-03T13:04:03.367Z"
+  },
+  {
+    "username": "steve",
+    "action": "вошёл в аккаунт",
+    "time": "2026-06-03T13:04:06.860Z"
+  },
+  {
+    "username": "steve",
+    "action": "вошёл в аккаунт",
+    "time": "2026-06-03T13:04:07.023Z"
+  },
+  {
+    "username": "steve",
+    "action": "создал мир \"vlad dolbolob\"",
+    "time": "2026-06-03T13:04:09.113Z"
+  },
+  {
+    "username": "steve",
+    "action": "создал мир \"vlad dolbolob\"",
+    "time": "2026-06-03T13:04:09.950Z"
+  },
+  {
+    "username": "steve",
+    "action": "вошёл в аккаунт",
+    "time": "2026-06-03T13:04:09.970Z"
+  },
+  {
+    "username": "steve",
+    "action": "создал мир \"vlad dolbolob\"",
+    "time": "2026-06-03T13:04:13.059Z"
+  },
+  {
+    "username": "steve",
+    "action": "вошёл в аккаунт",
+    "time": "2026-06-03T13:04:14.915Z"
+  },
+  {
+    "username": "steve",
+    "action": "вошёл в аккаунт",
+    "time": "2026-06-03T13:04:15.142Z"
+  },
+  {
+    "username": "steve",
+    "action": "создал мир \"vlad dolbolob\"",
+    "time": "2026-06-03T13:04:17.073Z"
+  },
+  {
+    "username": "steve",
+    "action": "создал мир \"vlad dolbolob\"",
+    "time": "2026-06-03T13:04:17.510Z"
+  },
+  {
+    "username": "steve",
+    "action": "вошёл в аккаунт",
+    "time": "2026-06-03T13:04:19.587Z"
+  },
+  {
+    "username": "steve",
+    "action": "создал мир \"vlad dolbolob\"",
+    "time": "2026-06-03T13:04:22.293Z"
+  },
+  {
+    "username": "steve",
+    "action": "вошёл в аккаунт",
+    "time": "2026-06-03T13:04:23.820Z"
+  },
+  {
+    "username": "steve",
+    "action": "вошёл в аккаунт",
+    "time": "2026-06-03T13:04:23.971Z"
+  },
+  {
+    "username": "steve",
+    "action": "создал мир \"vlad dolbolob\"",
+    "time": "2026-06-03T13:04:25.923Z"
+  },
+  {
+    "username": "steve",
+    "action": "создал мир \"vlad dolbolob\"",
+    "time": "2026-06-03T13:04:27.064Z"
+  },
+  {
+    "username": "steve",
+    "action": "вошёл в аккаунт",
+    "time": "2026-06-03T13:04:27.436Z"
+  },
+  {
+    "username": "steve",
+    "action": "создал мир \"vlad dolbolob\"",
+    "time": "2026-06-03T13:04:29.543Z"
+  },
+  {
+    "username": "steve",
+    "action": "вошёл в аккаунт",
+    "time": "2026-06-03T13:04:33.463Z"
+  },
+  {
+    "username": "steve",
+    "action": "вошёл в аккаунт",
+    "time": "2026-06-03T13:04:33.491Z"
+  },
+  {
+    "username": "steve",
+    "action": "создал мир \"vlad dolbolob\"",
+    "time": "2026-06-03T13:04:35.569Z"
+  },
+  {
+    "username": "steve",
+    "action": "вошёл в аккаунт",
+    "time": "2026-06-03T13:04:35.937Z"
+  },
+  {
+    "username": "steve",
+    "action": "создал мир \"vlad dolbolob\"",
+    "time": "2026-06-03T13:04:35.972Z"
+  },
+  {
+    "username": "steve",
+    "action": "создал мир \"vlad dolbolob\"",
+    "time": "2026-06-03T13:04:38.182Z"
+  },
+  {
+    "username": "steve",
+    "action": "вошёл в аккаунт",
+    "time": "2026-06-03T13:04:42.164Z"
+  },
+  {
+    "username": "steve",
+    "action": "вошёл в аккаунт",
+    "time": "2026-06-03T13:04:42.191Z"
+  },
+  {
+    "username": "steve",
+    "action": "создал мир \"vlad dolbolob\"",
+    "time": "2026-06-03T13:04:44.379Z"
+  },
+  {
+    "username": "steve",
+    "action": "вошёл в аккаунт",
+    "time": "2026-06-03T13:04:44.726Z"
+  },
+  {
+    "username": "steve",
+    "action": "создал мир \"vlad dolbolob\"",
+    "time": "2026-06-03T13:04:44.968Z"
+  },
+  {
+    "username": "burmalda",
+    "action": "забанил пользователя steve",
+    "time": "2026-06-03T13:04:45.432Z"
+  },
+  {
+    "username": "steve",
+    "action": "создал мир \"vlad dolbolob\"",
+    "time": "2026-06-03T13:04:46.890Z"
+  },
+  {
+    "username": "burmalda",
+    "action": "забанил пользователя steve",
+    "time": "2026-06-03T13:04:58.414Z"
+  },
+  {
+    "username": "burmalda",
+    "action": "забанил пользователя menion4ik",
+    "time": "2026-06-03T13:05:03.139Z"
+  },
+  {
+    "username": "vov4ik44",
+    "action": "создал мир \"${йоу}__1488\"",
+    "time": "2026-06-03T13:05:58.799Z"
+  },
+  {
+    "username": "alex",
+    "action": "вошёл в аккаунт",
+    "time": "2026-06-03T13:06:50.329Z"
+  },
+  {
+    "username": "alex",
+    "action": "создал мир \"vlad dolbolob\"",
+    "time": "2026-06-03T13:06:52.122Z"
+  },
+  {
+    "username": "burmalda",
+    "action": "вошёл в аккаунт",
+    "time": "2026-06-03T13:06:56.930Z"
+  },
+  {
+    "username": "burmalda",
+    "action": "разбанил пользователя menion4ik",
+    "time": "2026-06-03T13:07:48.617Z"
+  },
+  {
+    "username": "menion4ik",
+    "action": "вошёл в аккаунт",
+    "time": "2026-06-03T13:08:12.024Z"
+  },
+  {
+    "username": "burmalda",
+    "action": "удалил все миры",
+    "time": "2026-06-03T13:13:34.159Z"
+  },
+  {
+    "username": "burmalda",
+    "action": "создал мир \"test\"",
+    "time": "2026-06-03T13:17:20.171Z"
+  },
+  {
+    "username": "burmalda",
+    "action": "разбанил пользователя steve",
+    "time": "2026-06-03T13:35:20.365Z"
+  },
+  {
+    "username": "burmalda",
+    "action": "вошёл в аккаунт",
+    "time": "2026-06-04T08:27:18.055Z"
+  },
+  {
+    "username": "burmalda",
+    "action": "подключился к миру \"world-1780492640150\"",
+    "time": "2026-06-04T08:27:36.626Z"
+  },
+  {
+    "username": "burmalda",
+    "action": "вошёл в аккаунт",
+    "time": "2026-06-04T08:50:15.163Z"
+  },
+  {
+    "username": "steve",
+    "action": "вошёл в аккаунт",
+    "time": "2026-06-04T08:52:15.896Z"
+  },
+  {
+    "username": "testuser63136475",
+    "action": "зарегистрировался",
+    "time": "2026-06-04T08:52:16.606Z"
+  },
+  {
+    "username": "burmalda",
+    "action": "вошёл в аккаунт",
+    "time": "2026-06-04T08:52:40.662Z"
+  },
+  {
+    "username": "burmalda",
+    "action": "удалил все миры",
+    "time": "2026-06-04T08:52:44.728Z"
+  },
+  {
+    "username": "burmalda",
+    "action": "создал мир \"1\"",
+    "time": "2026-06-04T08:52:51.009Z"
+  },
+  {
+    "username": "burmalda",
+    "action": "вошёл в аккаунт",
+    "time": "2026-06-04T08:59:47.588Z"
+  },
+  {
+    "username": "burmalda",
+    "action": "удалил все миры",
+    "time": "2026-06-04T08:59:52.958Z"
+  },
+  {
+    "username": "burmalda",
+    "action": "создал мир \"1\"",
+    "time": "2026-06-04T08:59:57.364Z"
+  },
+  {
+    "username": "burmalda",
+    "action": "вошёл в аккаунт",
+    "time": "2026-06-04T09:09:10.227Z"
+  },
+  {
+    "username": "burmalda",
+    "action": "удалил все миры",
+    "time": "2026-06-04T09:09:14.710Z"
+  },
+  {
+    "username": "burmalda",
+    "action": "создал мир \"test\"",
+    "time": "2026-06-04T09:09:47.084Z"
+  },
+  {
+    "username": "burmalda",
+    "action": "вошёл в аккаунт",
+    "time": "2026-06-04T09:10:14.867Z"
+  },
+  {
+    "username": "testuser64612974",
+    "action": "зарегистрировался",
+    "time": "2026-06-04T09:16:53.224Z"
+  },
+  {
+    "username": "steve",
+    "action": "вошёл в аккаунт",
+    "time": "2026-06-04T09:16:53.820Z"
+  },
+  {
+    "username": "steve",
+    "action": "вошёл в аккаунт",
+    "time": "2026-06-04T09:17:20.106Z"
+  },
+  {
+    "username": "testuser64641141",
+    "action": "зарегистрировался",
+    "time": "2026-06-04T09:17:21.267Z"
+  },
+  {
+    "username": "steve",
+    "action": "вошёл в аккаунт",
+    "time": "2026-06-04T09:18:13.180Z"
+  },
+  {
+    "username": "testuser64693853",
+    "action": "зарегистрировался",
+    "time": "2026-06-04T09:18:13.984Z"
+  },
+  {
+    "username": "burmalda",
+    "action": "вошёл в аккаунт",
+    "time": "2026-06-04T09:18:30.924Z"
+  },
+  {
+    "username": "burmalda",
+    "action": "подключился к миру \"world-1780564187064\"",
+    "time": "2026-06-04T09:39:45.673Z"
+  },
+  {
+    "username": "steve",
+    "action": "вошёл в аккаунт",
+    "time": "2026-06-04T09:40:24.946Z"
+  },
+  {
+    "username": "steve",
+    "action": "подключился к миру \"world-1780564187064\"",
+    "time": "2026-06-04T09:40:29.121Z"
+  },
+  {
+    "username": "menion4ik",
+    "action": "вошёл в аккаунт",
+    "time": "2026-06-04T11:44:11.049Z"
+  },
+  {
+    "username": "menion4ik",
+    "action": "подключился к миру \"world-1780564187064\"",
+    "time": "2026-06-04T11:44:15.114Z"
+  },
+  {
+    "username": "menion4ik",
+    "action": "подключился к миру \"world-1780564187064\"",
+    "time": "2026-06-04T11:44:44.364Z"
+  },
+  {
+    "username": "menion4ik",
+    "action": "подключился к миру \"world-1780564187064\"",
+    "time": "2026-06-04T11:44:51.564Z"
+  },
+  {
+    "username": "menion4ik",
+    "action": "подключился к миру \"world-1780564187064\"",
+    "time": "2026-06-04T11:44:54.839Z"
+  },
+  {
+    "username": "menion4ik",
+    "action": "подключился к миру \"world-1780564187064\"",
+    "time": "2026-06-04T11:44:57.372Z"
+  },
+  {
+    "username": "menion4ik",
+    "action": "подключился к миру \"world-1780564187064\"",
+    "time": "2026-06-04T11:45:00.839Z"
+  },
+  {
+    "username": "menion4ik",
+    "action": "подключился к миру \"world-1780564187064\"",
+    "time": "2026-06-04T11:45:03.217Z"
+  },
+  {
+    "username": "menion4ik",
+    "action": "подключился к миру \"world-1780564187064\"",
+    "time": "2026-06-04T11:45:06.360Z"
+  },
+  {
+    "username": "menion4ik",
+    "action": "подключился к миру \"world-1780564187064\"",
+    "time": "2026-06-04T11:45:09.127Z"
+  },
+  {
+    "username": "menion4ik",
+    "action": "подключился к миру \"world-1780564187064\"",
+    "time": "2026-06-04T11:45:13.088Z"
+  },
+  {
+    "username": "menion4ik",
+    "action": "подключился к миру \"world-1780564187064\"",
+    "time": "2026-06-04T11:45:15.233Z"
+  },
+  {
+    "username": "menion4ik",
+    "action": "подключился к миру \"world-1780564187064\"",
+    "time": "2026-06-04T11:45:17.639Z"
+  },
+  {
+    "username": "menion4ik",
+    "action": "подключился к миру \"world-1780564187064\"",
+    "time": "2026-06-04T11:45:20.706Z"
+  },
+  {
+    "username": "menion4ik",
+    "action": "подключился к миру \"world-1780564187064\"",
+    "time": "2026-06-04T11:45:22.863Z"
+  },
+  {
+    "username": "menion4ik",
+    "action": "подключился к миру \"world-1780564187064\"",
+    "time": "2026-06-04T11:45:25.051Z"
+  },
+  {
+    "username": "menion4ik",
+    "action": "подключился к миру \"world-1780564187064\"",
+    "time": "2026-06-04T11:45:27.827Z"
+  },
+  {
+    "username": "menion4ik",
+    "action": "подключился к миру \"world-1780564187064\"",
+    "time": "2026-06-04T11:45:30.009Z"
+  },
+  {
+    "username": "menion4ik",
+    "action": "подключился к миру \"world-1780564187064\"",
+    "time": "2026-06-04T11:45:32.864Z"
+  },
+  {
+    "username": "menion4ik",
+    "action": "подключился к миру \"world-1780564187064\"",
+    "time": "2026-06-04T11:45:35.574Z"
+  },
+  {
+    "username": "menion4ik",
+    "action": "создал мир \"vlad dolbolob\"",
+    "time": "2026-06-04T11:45:48.626Z"
+  },
+  {
+    "username": "menion4ik",
+    "action": "подключился к миру \"world-1780573548604\"",
+    "time": "2026-06-04T11:45:50.331Z"
+  },
+  {
+    "username": "menion4ik",
+    "action": "подключился к миру \"world-1780573548604\"",
+    "time": "2026-06-04T11:46:21.981Z"
+  },
+  {
+    "username": "menion4ik",
+    "action": "вошёл в аккаунт",
+    "time": "2026-06-04T11:46:41.269Z"
+  },
+  {
+    "username": "menion4ik",
+    "action": "вошёл в аккаунт",
+    "time": "2026-06-04T11:46:42.238Z"
+  },
+  {
+    "username": "menion4ik",
+    "action": "вошёл в аккаунт",
+    "time": "2026-06-04T11:46:42.565Z"
+  },
+  {
+    "username": "menion4ik",
+    "action": "вошёл в аккаунт",
+    "time": "2026-06-04T11:46:42.951Z"
+  },
+  {
+    "username": "menion4ik",
+    "action": "вошёл в аккаунт",
+    "time": "2026-06-04T11:46:50.544Z"
+  },
+  {
+    "username": "menion4ik",
+    "action": "вошёл в аккаунт",
+    "time": "2026-06-04T11:46:50.897Z"
+  },
+  {
+    "username": "menion4ik",
+    "action": "вошёл в аккаунт",
+    "time": "2026-06-04T11:46:51.257Z"
+  },
+  {
+    "username": "menion4ik",
+    "action": "вошёл в аккаунт",
+    "time": "2026-06-04T11:46:51.610Z"
+  },
+  {
+    "username": "menion4ik",
+    "action": "вошёл в аккаунт",
+    "time": "2026-06-04T11:46:51.948Z"
+  },
+  {
+    "username": "burmaldaa",
+    "action": "зарегистрировался",
+    "time": "2026-06-04T11:49:33.925Z"
+  },
+  {
+    "username": "steve",
+    "action": "вошёл в аккаунт",
+    "time": "2026-06-04T12:00:55.427Z"
+  },
+  {
+    "username": "burmalda",
+    "action": "удалил все миры",
+    "time": "2026-06-04T12:19:27.249Z"
+  },
+  {
+    "username": "burmalda",
+    "action": "создал мир \"test\"",
+    "time": "2026-06-04T12:19:33.476Z"
+  },
+  {
+    "username": "steve",
+    "action": "вошёл в аккаунт",
+    "time": "2026-06-04T12:19:38.393Z"
+  },
+  {
+    "username": "burmalda",
+    "action": "подключился к миру \"world-1780575573457\"",
+    "time": "2026-06-04T12:27:57.892Z"
+  },
+  {
+    "username": "steve",
+    "action": "подключился к миру \"world-1780575573457\"",
+    "time": "2026-06-04T12:28:04.492Z"
+  },
+  {
+    "username": "steve",
+    "action": "подключился к миру \"world-1780575573457\"",
+    "time": "2026-06-04T12:53:40.255Z"
+  },
+  {
+    "username": "burmalda",
+    "action": "подключился к миру \"world-1780575573457\"",
+    "time": "2026-06-04T12:55:09.360Z"
+  },
+  {
+    "username": "steve",
+    "action": "подключился к миру \"world-1780575573457\"",
+    "time": "2026-06-04T12:55:13.710Z"
+  },
+  {
+    "username": "menion4ik",
+    "action": "вошёл в аккаунт",
+    "time": "2026-06-04T12:56:42.860Z"
+  },
+  {
+    "username": "menion4ik",
+    "action": "подключился к миру \"world-1780575573457\"",
+    "time": "2026-06-04T12:56:56.526Z"
+  },
+  {
+    "username": "menion4ik",
+    "action": "подключился к миру \"world-1780575573457\"",
+    "time": "2026-06-04T12:57:07.318Z"
+  },
+  {
+    "username": "menion4ik",
+    "action": "подключился к миру \"world-1780575573457\"",
+    "time": "2026-06-04T12:57:11.777Z"
+  },
+  {
+    "username": "menion4ik",
+    "action": "подключился к миру \"world-1780575573457\"",
+    "time": "2026-06-04T12:57:16.757Z"
+  },
+  {
+    "username": "menion4ik",
+    "action": "подключился к миру \"world-1780575573457\"",
+    "time": "2026-06-04T12:57:20.780Z"
+  },
+  {
+    "username": "burmalda",
+    "action": "создал мир \"1231231\"",
+    "time": "2026-06-04T13:08:49.247Z"
+  },
+  {
+    "username": "vov4ik44",
+    "action": "вошёл в аккаунт",
+    "time": "2026-06-04T13:25:36.548Z"
+  },
+  {
+    "username": "burmalda",
+    "action": "удалил мир \"world-1780575573457\"",
+    "time": "2026-06-04T13:28:29.469Z"
+  },
+  {
+    "username": "daria",
+    "action": "зарегистрировался",
+    "time": "2026-06-04T13:31:30.069Z"
+  },
+  {
+    "username": "vov4ik44",
+    "action": "вошёл в аккаунт",
+    "time": "2026-06-04T13:32:35.491Z"
+  },
+  {
+    "username": "burmalda",
+    "action": "вошёл в аккаунт",
+    "time": "2026-06-04T21:24:10.006Z"
+  },
+  {
+    "username": "burmalda",
+    "action": "вошёл в аккаунт",
+    "time": "2026-06-06T04:38:57.415Z"
+  },
+  {
+    "username": "burmalda",
+    "action": "вошёл в аккаунт",
+    "time": "2026-06-07T17:25:27.799Z"
+  },
+  {
+    "username": "burmalda",
+    "action": "вошёл в аккаунт",
+    "time": "2026-06-07T17:26:16.251Z"
+  },
+  {
+    "username": "burmalda",
+    "action": "вошёл в аккаунт",
+    "time": "2026-06-07T17:26:32.923Z"
+  },
+  {
+    "username": "steve",
+    "action": "вошёл в аккаунт",
+    "time": "2026-06-07T17:27:29.778Z"
+  },
+  {
+    "username": "steve",
+    "action": "вошёл в аккаунт",
+    "time": "2026-06-07T17:30:19.244Z"
+  },
+  {
+    "username": "steve",
+    "action": "вошёл в аккаунт",
+    "time": "2026-06-07T17:35:03.507Z"
+  },
+  {
+    "username": "burmalda",
+    "action": "вошёл в аккаунт",
+    "time": "2026-06-07T17:35:49.788Z"
+  },
+  {
+    "username": "steve",
+    "action": "вошёл в аккаунт",
+    "time": "2026-06-07T17:37:19.437Z"
+  },
+  {
+    "username": "steve",
+    "action": "вошёл в аккаунт",
+    "time": "2026-06-07T17:37:39.225Z"
+  },
+  {
+    "username": "burmalda",
+    "action": "вошёл в аккаунт",
+    "time": "2026-06-07T20:37:22.863Z"
+  },
+  {
+    "username": "steve",
+    "action": "вошёл в аккаунт",
+    "time": "2026-06-07T20:37:28.875Z"
+  },
+  {
+    "username": "burmalda",
+    "action": "вошёл в аккаунт",
+    "time": "2026-06-14T16:12:18.768Z"
+  },
+  {
+    "username": "steve",
+    "action": "вошёл в аккаунт",
+    "time": "2026-06-15T06:34:26.750Z"
+  },
+  {
+    "username": "vov4ik44",
+    "action": "вошёл в аккаунт",
+    "time": "2026-06-15T06:37:30.502Z"
+  },
+  {
+    "username": "vov4ik44",
+    "action": "создал мир \"asasdasddwaqdas\"",
+    "time": "2026-06-15T06:53:04.013Z"
+  },
+  {
+    "username": "steve",
+    "action": "вошёл в аккаунт",
+    "time": "2026-06-15T08:04:31.737Z"
+  },
+  {
+    "username": "burmalda",
+    "action": "вошёл в аккаунт",
+    "time": "2026-06-15T11:23:34.176Z"
+  },
+  {
+    "username": "burmalda",
+    "action": "вошёл в аккаунт",
+    "time": "2026-06-15T11:30:01.796Z"
+  },
+  {
+    "username": "menion4ik",
+    "action": "вошёл в аккаунт",
+    "time": "2026-06-15T11:34:00.346Z"
+  },
+  {
+    "username": "burmalda",
+    "action": "удалил мир \"world-1781506383992\"",
+    "time": "2026-06-15T11:35:33.915Z"
+  },
+  {
+    "username": "menion4ik",
+    "action": "создал мир \"vlad dolbolob\"",
+    "time": "2026-06-15T11:35:54.598Z"
+  },
+  {
+    "username": "vov4ik44",
+    "action": "вошёл в аккаунт",
+    "time": "2026-06-15T11:36:08.118Z"
+  },
+  {
+    "username": "vov4ik44",
+    "action": "создал мир \"676767\"",
+    "time": "2026-06-15T11:36:17.383Z"
+  },
+  {
+    "username": "burmalda",
+    "action": "удалил мир \"world-1781523354569\"",
+    "time": "2026-06-15T12:34:19.299Z"
+  },
+  {
+    "username": "menion4ik",
+    "action": "создал мир \"vlad dolbolob\"",
+    "time": "2026-06-15T13:25:39.280Z"
+  }
+]

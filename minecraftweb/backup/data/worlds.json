@@ -1,0 +1,32 @@
+[
+  {
+    "id": "world-1780578529232",
+    "name": "1231231",
+    "seed": "721377073",
+    "worldType": "default",
+    "creatorId": 10,
+    "creatorUsername": "burmalda",
+    "players": [],
+    "createdAt": "2026-06-04T13:08:49.232Z"
+  },
+  {
+    "id": "world-1781523377366",
+    "name": "676767",
+    "seed": "514723846",
+    "worldType": "default",
+    "creatorId": 9,
+    "creatorUsername": "vov4ik44",
+    "players": [],
+    "createdAt": "2026-06-15T11:36:17.366Z"
+  },
+  {
+    "id": "world-1781529939259",
+    "name": "vlad dolbolob",
+    "seed": "491101601",
+    "worldType": "default",
+    "creatorId": 8,
+    "creatorUsername": "menion4ik",
+    "players": [],
+    "createdAt": "2026-06-15T13:25:39.260Z"
+  }
+]

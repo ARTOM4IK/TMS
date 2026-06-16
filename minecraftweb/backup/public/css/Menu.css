@@ -1,0 +1,451 @@
+.UserPanel
+{
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 5;
+    background-color: rgba(112, 112, 112, 0.95);
+    border: 3px solid #3c3c3c;
+    border-top-color: #7e7e7e;
+    border-left-color: #7e7e7e;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.7);
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    min-width: 90px;
+}
+
+.UserIcon
+{
+    width: 48px;
+    height: 48px;
+    background-color: #6d6d6d;
+    border: 2px solid #3c3c3c;
+    border-top-color: #5e5e5e;
+    border-left-color: #5e5e5e;
+    box-shadow: inset 2px 2px 0px #3a3a3a;
+    background-image: linear-gradient(135deg, #8b8b8b 25%, transparent 25%, transparent 50%, #8b8b8b 50%, #8b8b8b 75%, transparent 75%);
+    background-size: 12px 12px;
+}
+
+.UserName
+{
+    color: #ffffff;
+    font-size: 18px;
+    text-align: center;
+    text-shadow: 2px 2px 0px #000000;
+    max-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.MenuContainer
+{
+    position: relative;
+    z-index: 2;
+    background-color: rgba(112, 112, 112, 0.95);
+    border: 4px solid #3c3c3c;
+    border-top-color: #7e7e7e;
+    border-left-color: #7e7e7e;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+    padding: 40px;
+    width: 90%;
+    max-width: 680px;
+    height: 80vh;
+    display: flex;
+    flex-direction: column;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.MenuHeader
+{
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.MenuHeader h2
+{
+    font-family: 'Press Start 2P', cursive;
+    color: #ffffff;
+    font-size: 24px;
+    text-shadow: 4px 4px 0px #000000;
+    text-transform: uppercase;
+    line-height: 1.5;
+}
+
+.WorldsList
+{
+    flex: 1;
+    overflow-y: auto;
+    background-color: #6d6d6d;
+    border: 2px solid #3c3c3c;
+    border-top-color: #5e5e5e;
+    border-left-color: #5e5e5e;
+    box-shadow: inset 2px 2px 0px #3a3a3a;
+    margin-bottom: 20px;
+    padding: 10px;
+}
+
+.WorldItem
+{
+    padding: 15px;
+    margin-bottom: 10px;
+    background-color: #8b8b8b;
+    border: 2px solid #3c3c3c;
+    border-top-color: #5e5e5e;
+    border-left-color: #5e5e5e;
+    color: #ffffff;
+    font-size: 20px;
+    cursor: pointer;
+    transition: all 0.1s;
+    box-shadow: inset -2px -2px 0px #3a3a3a;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.WorldName
+{
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.WorldMeta
+{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+    font-size: 16px;
+    color: #e0e0e0;
+}
+
+.StatusDot
+{
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid rgba(0, 0, 0, 0.4);
+    flex-shrink: 0;
+}
+
+.StatusDot.Online
+{
+    background-color: #55ff55;
+    box-shadow: 0 0 6px #55ff55;
+}
+
+.StatusDot.Offline
+{
+    background-color: #ff5555;
+    box-shadow: 0 0 6px #ff5555;
+}
+
+.WorldId
+{
+    font-family: 'Press Start 2P', cursive;
+    font-size: 9px;
+    color: #cccccc;
+    min-width: 70px;
+    text-align: right;
+}
+
+.PlayerCount
+{
+    min-width: 24px;
+    text-align: center;
+}
+
+.WorldItem:hover
+{
+    background-color: #7a9a60;
+    border-top-color: #bfff80;
+    border-left-color: #bfff80;
+    box-shadow: inset -2px -2px 0px #4d6638;
+}
+
+.WorldItem.Selected
+{
+    border: 3px solid #ffffff;
+    border-top-color: #ffffff;
+    border-left-color: #ffffff;
+    box-shadow: inset -2px -2px 0px #3a3a3a, 0 0 10px #ffffff;
+}
+
+.WorldItem:empty::before
+{
+    content: 'Пустая комната';
+    color: #aaaaaa;
+}
+
+.DeleteBtn
+{
+    background: none;
+    border: none;
+    color: #ff5555;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 2px 6px;
+    display: none;
+    flex-shrink: 0;
+}
+
+.DeleteBtn:hover
+{
+    color: #ff0000;
+}
+
+.WorldItem.Admin .DeleteBtn
+{
+    display: block;
+}
+
+.MenuActions
+{
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.MenuActions .BtnMinecraft
+{
+    flex: 1;
+}
+
+.BtnJoin
+{
+    background-color: #7a9a60;
+    border-top-color: #bfff80;
+    border-left-color: #bfff80;
+    box-shadow: inset -2px -2px 0px #4d6638;
+}
+
+.BtnJoin:hover
+{
+    background-color: #6a8a50;
+    border-top-color: #afff70;
+    border-left-color: #afff70;
+}
+
+.BtnJoin:disabled
+{
+    background-color: #555555;
+    color: #999999;
+    border-top-color: #3c3c3c;
+    border-left-color: #3c3c3c;
+    box-shadow: none;
+    cursor: not-allowed;
+}
+
+.BtnExit
+{
+    background-color: #9a6060;
+    border-top-color: #ff8080;
+    border-left-color: #ff8080;
+    box-shadow: inset -2px -2px 0px #663838;
+}
+
+.BtnExit:hover
+{
+    background-color: #8a5050;
+    border-top-color: #ff7070;
+    border-left-color: #ff7070;
+}
+
+.BtnCreate
+{
+    background-color: #607a9a;
+    border-top-color: #80bfff;
+    border-left-color: #80bfff;
+    box-shadow: inset -2px -2px 0px #384d66;
+}
+
+.BtnCreate:hover
+{
+    background-color: #506a8a;
+    border-top-color: #70afff;
+    border-left-color: #70afff;
+}
+
+.BtnJoinId
+{
+    background-color: #9a7a60;
+    border-top-color: #ffcc80;
+    border-left-color: #ffcc80;
+    box-shadow: inset -2px -2px 0px #664d38;
+}
+
+.BtnJoinId:hover
+{
+    background-color: #8a6a50;
+    border-top-color: #ffbb70;
+    border-left-color: #ffbb70;
+}
+
+.ModalOverlay
+{
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.75);
+    z-index: 50;
+    align-items: center;
+    justify-content: center;
+}
+
+.ModalOverlay.Visible
+{
+    display: flex;
+}
+
+.ModalBox
+{
+    background-color: rgba(112, 112, 112, 0.98);
+    border: 4px solid #3c3c3c;
+    border-top-color: #7e7e7e;
+    border-left-color: #7e7e7e;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.9);
+    padding: 40px;
+    width: 90%;
+    max-width: 450px;
+    text-align: center;
+}
+
+.ModalBox h3
+{
+    font-family: 'Press Start 2P', cursive;
+    color: #ffffff;
+    font-size: 14px;
+    margin-bottom: 25px;
+    text-shadow: 3px 3px 0px #000000;
+    line-height: 1.6;
+}
+
+.ModalBox input
+{
+    width: 100%;
+    padding: 15px;
+    box-sizing: border-box;
+    background-color: #8b8b8b;
+    border: 2px solid #3c3c3c;
+    border-top-color: #5e5e5e;
+    border-left-color: #5e5e5e;
+    color: #000000;
+    font-size: 24px;
+    font-family: 'VT323', monospace;
+    text-align: center;
+    outline: none;
+    box-shadow: inset 2px 2px 0px #3a3a3a;
+    margin-bottom: 20px;
+}
+
+.ModalBox input:focus
+{
+    border-color: #ffffff;
+    border-top-color: #ffffff;
+    border-left-color: #ffffff;
+}
+
+.ModalActions
+{
+    display: flex;
+    gap: 10px;
+}
+
+.ModalActions .BtnMinecraft
+{
+    flex: 1;
+    font-size: 11px;
+}
+
+.ModalError
+{
+    color: #ff5555;
+    font-size: 18px;
+    margin-top: 15px;
+    min-height: 22px;
+    text-shadow: 1px 1px 0px #000;
+}
+
+.BtnDeleteAll
+{
+    display: none;
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    background-color: #9a2020;
+    border: 2px solid #000000;
+    border-top-color: #ff4444;
+    border-left-color: #ff4444;
+    color: #ffffff;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 10px;
+    cursor: pointer;
+    text-shadow: 2px 2px 0px #000;
+    box-shadow: inset -2px -2px 0px #5a0000;
+    transition: all 0.1s;
+}
+
+.BtnDeleteAll:hover
+{
+    background-color: #c02020;
+    border-top-color: #ff6666;
+    border-left-color: #ff6666;
+}
+
+.BtnDeleteAll:active
+{
+    box-shadow: inset 2px 2px 0px #5a0000;
+    border-top-color: #3c3c3c;
+    border-left-color: #3c3c3c;
+}
+
+#AdminConsole
+{
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.92);
+    border-top: 2px solid #555;
+    z-index: 100;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+#ConsoleOutput
+{
+    color: #aaffaa;
+    font-family: 'VT323', monospace;
+    font-size: 18px;
+    height: 120px;
+    overflow-y: auto;
+    margin-bottom: 6px;
+}
+
+#ConsoleInput
+{
+    width: 100%;
+    background: #111;
+    border: 1px solid #555;
+    color: #fff;
+    font-family: 'VT323', monospace;
+    font-size: 20px;
+    padding: 6px;
+    box-sizing: border-box;
+    outline: none;
+}

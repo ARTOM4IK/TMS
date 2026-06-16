@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация | Minecraft</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+    <style>
+        body, html 
+        {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: 'VT323', monospace;
+        }
+
+        #background-container 
+        {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            background-color: #1a1a1a;
+        }
+
+        #background-container::after 
+        {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            pointer-events: none;
+        }
+
+        .register-container 
+        {
+            position: relative;
+            z-index: 2;
+            background-color: rgba(112, 112, 112, 0.95);
+            border: 4px solid #3c3c3c;
+            border-top-color: #7e7e7e;
+            border-left-color: #7e7e7e;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+            padding: 40px;
+            width: 90%;
+            max-width: 450px;
+            text-align: center;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .register-container h2 
+        {
+            font-family: 'Press Start 2P', cursive;
+            color: #ffffff;
+            font-size: 24px;
+            margin-bottom: 30px;
+            text-shadow: 4px 4px 0px #000000;
+            text-transform: uppercase;
+            line-height: 1.5;
+        }
+
+        .input-group 
+        {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .input-group label 
+        {
+            display: block;
+            color: #ffffff;
+            font-size: 20px;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 0px #000000;
+        }
+
+        .input-group input 
+        {
+            width: 100%;
+            padding: 12px;
+            box-sizing: border-box;
+            background-color: #8b8b8b;
+            border: 2px solid #3c3c3c;
+            border-top-color: #5e5e5e;
+            border-left-color: #5e5e5e;
+            color: #000000;
+            font-size: 20px;
+            font-family: 'VT323', monospace;
+            outline: none;
+            box-shadow: inset 2px 2px 0px #3a3a3a;
+        }
+
+        .input-group input:focus 
+        {
+            border-color: #ffffff;
+            border-top-color: #ffffff;
+            border-left-color: #ffffff;
+        }
+
+        .btn-minecraft 
+        {
+            width: 100%;
+            padding: 15px;
+            background-color: #868686;
+            border: 2px solid #000000;
+            border-top-color: #fff;
+            border-left-color: #fff;
+            color: #ffffff;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 14px;
+            cursor: pointer;
+            text-shadow: 2px 2px 0px #000;
+            margin-top: 10px;
+            box-shadow: inset -2px -2px 0px #3a3a3a;
+            transition: all 0.1s;
+        }
+
+        .btn-minecraft:hover 
+        {
+            background-color: #7a9a60;
+            color: #ffffff;
+            border-top-color: #bfff80;
+            border-left-color: #bfff80;
+            box-shadow: inset -2px -2px 0px #4d6638;
+        }
+
+        .btn-minecraft:active 
+        {
+            box-shadow: inset 2px 2px 0px #3a3a3a;
+            border-top-color: #3c3c3c;
+            border-left-color: #3c3c3c;
+        }
+
+        .footer-links 
+        {
+            margin-top: 25px;
+            font-size: 18px;
+        }
+
+        .footer-links a 
+        {
+            color: #55ff55;
+            text-decoration: none;
+            text-shadow: 1px 1px 0px #000;
+        }
+
+        .footer-links a:hover 
+        {
+            color: #88ff88;
+            text-decoration: underline;
+        }
+
+        .error-message 
+        {
+            color: #ff5555;
+            font-size: 18px;
+            margin-top: 15px;
+            text-shadow: 1px 1px 0px #000;
+            display: none;
+        }
+
+        .success-message 
+        {
+            color: #55ff55;
+            font-size: 18px;
+            margin-top: 15px;
+            text-shadow: 1px 1px 0px #000;
+            display: none;
+        }
+
+        .loading 
+        {
+            display: none;
+            margin: 15px auto;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin 
+        {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="background-container"></div>
+
+    <div class="register-container">
+        <h2>Создание Аккаунта</h2>
+        
+        <form id="RegisterForm">
+            <div class="input-group">
+                <label for="RegUsername">Имя пользователя</label>
+                <input type="text" id="RegUsername" name="username" required placeholder="Steve" autocomplete="username">
+            </div>
+            
+            <div class="input-group">
+                <label for="RegEmail">Email</label>
+                <input type="email" id="RegEmail" name="email" required placeholder="steve@minecraft.com">
+            </div>
+            
+            <div class="input-group">
+                <label for="RegPassword">Пароль</label>
+                <input type="password" id="RegPassword" name="password" required placeholder="••••••••">
+            </div>
+            
+            <div class="input-group">
+                <label for="RegConfirmPassword">Повторите пароль</label>
+                <input type="password" id="RegConfirmPassword" name="confirmPassword" required placeholder="••••••••">
+            </div>
+            
+            <button type="submit" class="btn-minecraft" id="RegisterBtn">Зарегистрироваться</button>
+            <div class="loading" id="Loading"></div>
+            <div class="error-message" id="ErrorMessage"></div>
+            <div class="success-message" id="SuccessMessage"></div>
+        </form>
+        
+        <div class="footer-links">
+            <a href="/">Войти</a> • <a href="/forgot">Забыли пароль?</a>
+        </div>
+    </div>
+
+    <script>
+        function ShowError(Message)
+        {
+            const ErrorMessage = document.getElementById('ErrorMessage');
+            ErrorMessage.textContent = Message;
+            ErrorMessage.style.display = 'block';
+        }
+
+        function ShowSuccess(Message)
+        {
+            const SuccessMessage = document.getElementById('SuccessMessage');
+            SuccessMessage.textContent = Message;
+            SuccessMessage.style.display = 'block';
+        }
+
+        async function HandleRegister(Event)
+        {
+            Event.preventDefault();
+            
+            const Username = document.getElementById('RegUsername').value.trim();
+            const Email = document.getElementById('RegEmail').value.trim();
+            const Password = document.getElementById('RegPassword').value;
+            const ConfirmPassword = document.getElementById('RegConfirmPassword').value;
+            const RegisterBtn = document.getElementById('RegisterBtn');
+            const Loading = document.getElementById('Loading');
+            const ErrorMessage = document.getElementById('ErrorMessage');
+            const SuccessMessage = document.getElementById('SuccessMessage');
+            
+            ErrorMessage.style.display = 'none';
+            SuccessMessage.style.display = 'none';
+            
+            if (Password !== ConfirmPassword)
+            {
+                ShowError('Пароли не совпадают');
+                return;
+            }
+            
+            RegisterBtn.style.display = 'none';
+            Loading.style.display = 'block';
+            
+            try
+            {
+                const Response = await fetch('/api/register', 
+                {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: Username, email: Email, password: Password })
+                });
+                
+                const Data = await Response.json();
+                
+                if (Response.ok)
+                {
+                    localStorage.setItem('ls_token', Data.token);
+                    localStorage.setItem('ls_username', Data.user.username);
+                    localStorage.setItem('ls_IsAdmin', Data.user.IsAdmin === true);
+                    
+                    ShowSuccess('Аккаунт создан! Перенаправление...');
+                    setTimeout(() =>
+                    {
+                        window.location.href = '/menu';
+                    }, 1500);
+                }
+                else
+                {
+                    ShowError(Data.error || 'Ошибка регистрации');
+                }
+            }
+            catch (Error)
+            {
+                ShowError('Ошибка подключения к серверу');
+                console.error('Register error:', Error);
+            }
+            finally
+            {
+                RegisterBtn.style.display = 'block';
+                Loading.style.display = 'none';
+            }
+        }
+
+        function Init()
+        {
+            document.getElementById('RegisterForm').addEventListener('submit', HandleRegister);
+        }
+
+        Init();
+    </script>
+</body>
+</html>

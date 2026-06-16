@@ -1,0 +1,108 @@
+body, html
+{
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-family: 'VT323', monospace;
+}
+
+#BackgroundContainer
+{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    background-color: #1a1a1a;
+}
+
+#BackgroundContainer::after
+{
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    pointer-events: none;
+}
+
+.SessionToast
+{
+    position: fixed;
+    bottom: -80px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(60, 60, 60, 0.95);
+    border: 3px solid #3c3c3c;
+    border-top-color: #7e7e7e;
+    border-left-color: #7e7e7e;
+    color: #ffffff;
+    padding: 16px 28px;
+    font-size: 20px;
+    text-shadow: 2px 2px 0px #000000;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+    z-index: 20;
+    transition: bottom 0.5s ease;
+    white-space: nowrap;
+}
+
+.SessionToast.Visible
+{
+    bottom: 30px;
+}
+
+.SessionToast .Highlight
+{
+    color: #55ff55;
+}
+
+.BtnMinecraft
+{
+    padding: 15px;
+    background-color: #868686;
+    border: 2px solid #000000;
+    border-top-color: #fff;
+    border-left-color: #fff;
+    color: #ffffff;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 12px;
+    cursor: pointer;
+    text-shadow: 2px 2px 0px #000;
+    box-shadow: inset -2px -2px 0px #3a3a3a;
+    transition: all 0.1s;
+}
+
+.BtnMinecraft:hover
+{
+    background-color: #7a9a60;
+    border-top-color: #bfff80;
+    border-left-color: #bfff80;
+    box-shadow: inset -2px -2px 0px #4d6638;
+}
+
+.BtnMinecraft:active
+{
+    box-shadow: inset 2px 2px 0px #3a3a3a;
+    border-top-color: #3c3c3c;
+    border-left-color: #3c3c3c;
+}
+
+.BtnMinecraft:disabled
+{
+    background-color: #555555;
+    color: #999999;
+    border-top-color: #3c3c3c;
+    border-left-color: #3c3c3c;
+    box-shadow: none;
+    cursor: not-allowed;
+}
+
+@keyframes Spin
+{
+    to { transform: rotate(360deg); }
+}

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Render</title>
+    <style>
+        /* Скрываем стандартный курсор */
+        html, body {
+            cursor: none;
+        }
+
+        /* Стили для крестика строго по центру */
+        #crosshair {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+            color: red;
+            pointer-events: none; /* Клики проходят насквозь */
+            z-index: 9999;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        body {
+            background: #000;
+        }
+
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: block;
+        }
+
+        #fps {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            color: #0f0;
+            font-family: monospace;
+            font-size: 16px;
+            z-index: 1000;
+        }
+
+        #position {
+            position: fixed;
+            top: 10px;
+            left: 100px;
+            color: #0f0;
+            font-family: monospace;
+            font-size: 16px;
+            z-index: 1000;
+        }
+
+        #online {
+            position: fixed;
+            top: 10px;
+            left: 320px;
+            color: #ff0;
+            font-family: monospace;
+            font-size: 16px;
+            z-index: 1000;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="gpuCanvas"></canvas>
+    <div id="fps">FPS: 0</div>
+    <div id="crosshair">+</div>
+    <div id="position">Pos: </div>
+    <div id="online">P2P: 0</div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script type="module" src="./src/main.js"></script>
+</body>
+
+</html>
