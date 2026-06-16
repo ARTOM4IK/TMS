@@ -29,10 +29,7 @@ const App = Express();
 const HttpServer = Http.createServer(App);
 
 //data to req.body
-App.use(Cors({
-  origin: '*',
-  credentials: true  
-}));
+App.use(Cors());
 App.use(Express.json());
 App.use(Express.urlencoded({ extended: true }));
 
@@ -102,11 +99,9 @@ async function StartServer()
     StartWebRTCServer(HttpServer);
 
     const Port = process.env.PORT || 3000;
-    HttpServer.listen(Port, '0.0.0.0', () =>
+    HttpServer.listen(Port, () =>
     {
-      console.log(`Minecraft Web успешно запущен!`);
-      console.log(`Локально: http://localhost:${Port}`);
-      console.log(`В интернете: http://80.93.62.164:${Port}\n`);
+      console.log(`Minecraft Web Server running on http://localhost:${Port}`);
     });
   }
   catch (error)
