@@ -30,6 +30,14 @@ export class Multiplayer
     this.lastSend = 0;
     this.colorIndex = 0;
     this.localPlayer = null;
+    this.onBlockChange = null;
+    this.blockSeq = 0;
+    this.seenBlockKeys = new Set();
+  }
+
+  bindBlockHandler(Handler)
+  {
+    this.onBlockChange = Handler;
   }
 
   bindLocalPlayer(Player)
@@ -144,6 +152,22 @@ export class Multiplayer
         try
         {
           const State = JSON.parse(Event.data);
+
+          if (State.type === 'block')
+          {
+            const Key = `${PeerId}:${State.seq}`;
+            if (this.seenBlockKeys.has(Key))
+              return;
+
+            this.seenBlockKeys.add(Key);
+            if (this.seenBlockKeys.size > 4096)
+              this.seenBlockKeys.clear();
+
+            if (this.onBlockChange)
+              this.onBlockChange(State.x, State.y, State.z, State.blockId);
+            return;
+          }
+
           const Remote = this.ensureRemotePlayer(PeerId, State.name || PeerName);
           Remote.applyState(State);
         }
@@ -250,6 +274,7 @@ export class Multiplayer
     this.lastSend = Now;
 
     const Packet = JSON.stringify({
+      type: 'player',
       name: this.username,
       x: Player.camera.position[0],
       y: Player.camera.position[1],
@@ -258,12 +283,33 @@ export class Multiplayer
       pitch: Player.camera.pitch
     });
 
+    this.broadcast(Packet);
+  }
+
+  sendBlockChange(x, y, z, blockId)
+  {
+    if (!this.enabled)
+      return;
+
+    const Packet = JSON.stringify({
+      type: 'block',
+      x,
+      y,
+      z,
+      blockId,
+      seq: ++this.blockSeq,
+      time: Date.now()
+    });
+
+    this.broadcast(Packet);
+  }
+
+  broadcast(Packet)
+  {
     Object.values(this.peers).forEach(Peer =>
     {
       if (Peer.dc && Peer.dc.readyState === 'open')
-      {
         Peer.dc.send(Packet);
-      }
     });
   }
 

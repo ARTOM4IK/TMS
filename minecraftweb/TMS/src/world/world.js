@@ -39,28 +39,36 @@ export class World
   setBlock(x, y, z, blockId)
   {
     const chunkX = Math.floor(x / Chunk.W);
-    const chunkY = Math.floor(y / Chunk.H);
     const chunkZ = Math.floor(z / Chunk.D);
     const localX = x - chunkX * Chunk.W;
-    const localY = y - chunkY * Chunk.D;
+    const localY = y;
     const localZ = z - chunkZ * Chunk.D;
 
     const chunk = this.getChunk(chunkX, chunkZ);
     if (!chunk)
-      return null;
+      return false;
 
-    return chunk.setBlock(localX, localY, localZ, blockId);
+    const Prev = chunk.getBlock(localX, localY, localZ);
+    chunk.setBlock(localX, localY, localZ, blockId);
+    return Prev !== blockId;
   }
+
+  applyRemoteBlock(x, y, z, blockId)
+  {
+    if (blockId === 0)
+      return this.removeBlock(x, y, z);
+    return this.setBlock(x, y, z, blockId);
+  }
+
   getBlock(x, y, z)
   {
     const chunkX = Math.floor(x / Chunk.W);
-    const chunkY = Math.floor(y / Chunk.H);
     const chunkZ = Math.floor(z / Chunk.D);
     const localX = x - chunkX * Chunk.W;
-    const localY = y - chunkY * Chunk.H;
+    const localY = y;
     const localZ = z - chunkZ * Chunk.D;
 
-    if (chunkY < 0 || chunkY >= Chunk.H)
+    if (localY < 0 || localY >= Chunk.H)
       return null;
     const chunk = this.getChunk(chunkX, chunkZ);
     if (!chunk)
@@ -72,13 +80,12 @@ export class World
   removeBlock(x, y, z)
   {
     const chunkX = Math.floor(x / Chunk.W);
-    const chunkY = Math.floor(y / Chunk.H);
     const chunkZ = Math.floor(z / Chunk.D);
     const localX = x - chunkX * Chunk.W;
-    const localY = y - chunkY * Chunk.H;
+    const localY = y;
     const localZ = z - chunkZ * Chunk.D;
 
-    if (chunkY < 0 || chunkY >= Chunk.H)
+    if (localY < 0 || localY >= Chunk.H)
       return null;
     const chunk = this.getChunk(chunkX, chunkZ);
     if (!chunk)

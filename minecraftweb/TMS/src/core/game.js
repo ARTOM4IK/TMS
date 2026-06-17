@@ -11,15 +11,6 @@ import { PlayerRenderer } from '../renderer/playerRenderer.js';
 import { WorldStorage } from '../network/worldStorage.js';
 import { Chunk } from '../world/chunk.js';
 
-/**
- * Находит первую целую координату (воксель), которую пересекает луч из камеры.
- * @param {Object} cameraPos - Позиция камеры {x, y, z}
- * @param {Object} cameraDir - Направление взгляда (нормализованный вектор) {x, y, z}
- * @param {number} maxDistance - Максимальное расстояние полета луча
- * @param {Function} isSolidBlock - Функция-колбэк (x,y,z) => boolean. Возвращает true, если по этим координатам есть блок.
- * @returns {Object|null} Координаты целого блока {x, y, z} или null, если ничего не найдено
- */
-
 export class Game
 {
     constructor()
@@ -37,11 +28,35 @@ export class Game
         this.playerRenderer = null;
         this.worldStorage = null;
         this.worldId = null;
+        this.worldSeed = '0';
+    }
+
+    resolveWorldSeed(WorldMeta)
+    {
+        if (WorldMeta && WorldMeta.seed)
+            return String(WorldMeta.seed);
+
+        try
+        {
+            const SavedWorld = JSON.parse(localStorage.getItem('ls_currentWorld') || 'null');
+            if (SavedWorld && SavedWorld.id === this.worldId && SavedWorld.seed)
+                return String(SavedWorld.seed);
+        }
+        catch (Error) {}
+
+        return '0';
     }
 
     async init()
     {
         await this.renderer.init(document.getElementById("gpuCanvas"));
+
+        this.worldId = new URLSearchParams(window.location.search).get('worldId') || 'default';
+        const Token = localStorage.getItem('ls_token');
+        this.worldStorage = new WorldStorage(this.worldId, Token);
+
+        const WorldMeta = await this.worldStorage.fetchWorldMeta();
+        this.worldSeed = this.resolveWorldSeed(WorldMeta);
 
         const distance = 10;
 
@@ -49,13 +64,10 @@ export class Game
         {
             for (let j = -distance; j < distance; j++)
             {
-                this.world.AddChunk(this.renderer, i, j).generateTerrain();
+                this.world.AddChunk(this.renderer, i, j).generateTerrain(this.worldSeed);
             }
         }
 
-        this.worldId = new URLSearchParams(window.location.search).get('worldId') || 'default';
-        const Token = localStorage.getItem('ls_token');
-        this.worldStorage = new WorldStorage(this.worldId, Token);
         await this.worldStorage.loadArea(this.world, -distance, distance - 1, -distance, distance - 1);
 
         window.addEventListener('beforeunload', () =>
@@ -64,6 +76,7 @@ export class Game
             if (this.worldStorage)
                 this.worldStorage.flush();
         });
+
         this.player.camera.position = [0, 55, 0];
         this.player.camera.update(90, this.renderer.webgpu.canvas.width / this.renderer.webgpu.canvas.height);
 
@@ -75,11 +88,30 @@ export class Game
         this.playerRenderer = new PlayerRenderer(this.renderer);
         await this.playerRenderer.init();
 
-        const WorldId = this.worldId;
         const Username = localStorage.getItem('ls_username') || 'guest';
         this.multiplayer.bindLocalPlayer(this.player);
-        this.multiplayer.connect(WorldId, Username);
+        this.multiplayer.bindBlockHandler((x, y, z, blockId) =>
+        {
+            this.applyRemoteBlock(x, y, z, blockId);
+        });
+        this.multiplayer.connect(this.worldId, Username);
+    }
 
+    applyRemoteBlock(x, y, z, blockId)
+    {
+        this.world.applyRemoteBlock(x, y, z, blockId);
+        this.queueChunkSaveAtBlock(x, y, z);
+    }
+
+    applyLocalBlockChange(x, y, z, blockId)
+    {
+        if (blockId === 0)
+            this.world.removeBlock(x, y, z);
+        else
+            this.world.setBlock(x, y, z, blockId);
+
+        this.multiplayer.sendBlockChange(x, y, z, blockId);
+        this.queueChunkSaveAtBlock(x, y, z);
     }
 
     queueChunkSave(WorldX, WorldZ)
@@ -113,34 +145,23 @@ export class Game
         {
             const p = this.world.raycastVoxel(this.player.camera.position, this.player.camera.forward, 5);
             if (p != null)
-            {
-                this.world.removeBlock(p.target.x, p.target.y, p.target.z);
-                this.queueChunkSaveAtBlock(p.target.x, p.target.y, p.target.z);
-            }
+                this.applyLocalBlockChange(p.target.x, p.target.y, p.target.z, 0);
         }
         if (this.input.mouseButtonsClick[2])
         {
             const p = this.world.raycastVoxel(this.player.camera.position, this.player.camera.forward, 5);
             if (p != null)
-            {
-                this.world.setBlock(p.previous.x, p.previous.y, p.previous.z, 1);
-                this.queueChunkSaveAtBlock(p.previous.x, p.previous.y, p.previous.z);
-            }
+                this.applyLocalBlockChange(p.previous.x, p.previous.y, p.previous.z, 1);
         }
 
         this.player.update(this.input, this.time);
         this.controller.update(this.player, this.world, this.time);
 
-//        this.camera.PlayerCamera(this.time, this.input);
-//        this.camera.update(this.camera.fov, this.renderer.webgpu.canvas.width / this.renderer.webgpu.canvas.height);
-
         this.world.update();
 
         this.multiplayer.sendLocalState(this.player);
         for (const Remote of this.multiplayer.remotePlayers.values())
-        {
             Remote.update(this.time.delta);
-        }
 
         const fpsElement = document.getElementById('fps');
         fpsElement.textContent = `FPS: ${this.time.fps}`;
@@ -158,17 +179,14 @@ export class Game
     loop()
     {
         this.update();
-
         this.render();
-
-
         this.input.postUpdate();
         requestAnimationFrame(this.loop.bind(this));
     }
 
     render()
     {
-        this.renderer.FrameStart(this.player.camera);//this.ThirdCamera);
+        this.renderer.FrameStart(this.player.camera);
         this.renderer.renderSky();
         this.renderer.renderWorld(this.world.chunks, this.player.camera);
         if (this.playerRenderer)

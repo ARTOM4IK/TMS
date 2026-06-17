@@ -18,6 +18,30 @@ export class WorldStorage
     };
   }
 
+  async fetchWorldMeta()
+  {
+    if (!this.token || !this.worldId)
+      return null;
+
+    try
+    {
+      const Response = await fetch(`/api/worlds/${this.worldId}`, {
+        headers: this.getAuthHeaders()
+      });
+
+      if (!Response.ok)
+        return null;
+
+      const Data = await Response.json();
+      return Data.world;
+    }
+    catch (Error)
+    {
+      console.warn('WorldStorage meta fetch failed:', Error);
+      return null;
+    }
+  }
+
   async loadArea(World, MinX, MaxX, MinZ, MaxZ)
   {
     if (!this.token || !this.worldId)
