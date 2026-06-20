@@ -55,7 +55,7 @@ function RequestLogger(Req, Res, Next)
 
 App.use(RequestLogger);
 App.use('/api', require('./routes/api'));
-const TmsRoot = Path.join(__dirname, '..', 'TMS');
+const TmsRoot = Path.join(__dirname, '..', 'client');
 
 /*
  * Send HTML page for clean URL route.
@@ -85,8 +85,8 @@ App.get('/register', ServePage('register.html'));
 App.get('/forgot', ServePage('forgot.html'));
 
 //connect other additional files
-App.use(Express.static(Path.join(__dirname, 'public')));
 App.use(Express.static(TmsRoot));
+App.use(Express.static(Path.join(__dirname, 'public')));
 
 /*
  * Main server initialization.

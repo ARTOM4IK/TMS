@@ -107,7 +107,7 @@ export class WorldStorage
     for (const Entry of Queue)
     {
       try
-      {
+      { 
         await fetch(`/api/worlds/${this.worldId}/chunks/${Entry.ChunkX}/${Entry.ChunkZ}`, {
           method: 'PUT',
           headers: this.getAuthHeaders(),
